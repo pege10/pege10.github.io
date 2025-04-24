@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOME Fal</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hover-target {
+            stroke: red; /* Add a visible stroke for debugging */
+            stroke-width: 5;
+            pointer-events: all; /* Ensure the path is clickable */
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-container">
+        <div class="image-wrapper">
+            <!-- Background Image -->
+            <img src="images/fal.jpg" alt="fal" class="base-image">
+    
+            <!-- Group 1 -->
+            <div class="image-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
+                    <path class="cls-1 hover-target" d="M3000,2649.8 h367.83 v465.09 h-367.83 Z"/>
+                </svg>
+                <img src="images/keret_02.png" alt="Hovered Image" class="hover-image">
+                <div class="hover-text">
+                    <h2>Title</h2>
+                    <p>Descrwfervrvription...</p>
+                </div>
+            </div>
+
+            <!-- Group 2 -->
+            <div class="image-container">
+                <svg id="FAL_PANO_colored_corrected_Image_2" data-name="FAL PANO colored corrected Image 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
+                    <path class="cls-1 hover-target" d="M5000,2000 h300 v400 h-300 Z"/>
+                </svg>
+                <img src="images/keret_02.png" alt="Hovered Image" class="hover-image">
+                <div class="hover-text">
+                    <h2>Another Title</h2>
+                    <p>
+                        This is the description for the second group. Add your content here.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Group 3 -->
+            <div class="image-container">
+                <svg id="FAL_PANO_colored_corrected_Image_3" data-name="FAL PANO colored corrected Image 3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
+                    <path class="cls-1 hover-target" d="M7000,2649.8 h367.83 v465.09 h-367.83 Z"/>
+                </svg>
+                <img src="images/keret_02.png" alt="Hovered Image" class="hover-image">
+                <div class="hover-text">
+                    <h2>Third Title</h2>
+                    <p>
+                        This is thedccdscdscdscdscds description for the third group. Add your content here.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Group 4 -->
+            <div class="image-container">
+                <svg id="FAL_PANO_colored_corrected_Image_4" data-name="FAL PANO colored corrected Image 4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
+                    <path class="cls-1 hover-target" d="M8736.02,2649.8 h367.83 v465.09 h-367.83 Z"/>
+                </svg>
+                <img src="images/keret_02.png" alt="Hovered Image" class="hover-image">
+                <div class="hover-text">
+                    <h2>Children Of The Revolution</h2>
+                    <p>A "Children of the Revolution" egy 1972-ben megjelent dal, amelyet a T. Rex nevű brit glam rock együttes adott elő, Marc Bolan vezetésével. A glam rock korszak egyik ikonikus dala, a forradalom,a lázadás és a fiatal generációk szabadságvágyának témáit dolgozza fel. Az egyik kulcsmondata: "You won't fool the children of the revolution"
+                        („Nem fogjátok becsapni a forradalom gyermekeit”), ami egy erőteljes kijelentés a hatalom és a rendszer ellen.
+                        </p>
+                </div>
+            </div>
+
+            <!-- Black overlay -->
+            <div class="screen-overlay"></div>
+        </div>
+    </div>
+
+    <script>
+        const paths = document.querySelectorAll(".hover-target");
+        const images = document.querySelectorAll(".hover-image");
+        const texts = document.querySelectorAll(".hover-text");
+        const overlay = document.querySelector(".screen-overlay");
+
+        console.log("Paths length:", paths.length);
+        paths.forEach((path, index) => {
+            console.log(`Path ${index}:`, path);
+        });
+        images.forEach((image, index) => {
+            console.log(`Image ${index}:`, image);
+        });
+        texts.forEach((text, index) => {
+            console.log(`Text ${index}:`, text);
+        });
+
+        let isLocked = false; // Will be true after click
+
+        function showElements(index) {
+            images[index].style.opacity = "1";
+            images[index].style.transform = "scale(2.5)";
+            images[index].style.zIndex = "3";
+
+            texts[index].style.opacity = "1";
+            texts[index].style.zIndex = "3";
+
+            overlay.style.opacity = "1";
+            overlay.style.pointerEvents = "auto";
+        }
+
+        function hideElements(index) {
+            images[index].style.opacity = "0";
+            images[index].style.transform = "scale(1)";
+            images[index].style.zIndex = "1";
+
+            texts[index].style.opacity = "0";
+            texts[index].style.zIndex = "1";
+
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+        }
+
+        // Loop through all paths and attach event listeners
+        paths.forEach((path, index) => {
+            path.addEventListener("mouseenter", () => {
+                console.log(`Hovered on path ${index}`); // Log when hovering starts
+                if (!isLocked) {
+                    showElements(index);
+                }
+            });
+
+            path.addEventListener("mouseleave", () => {
+                console.log(`Mouse left path ${index}`); // Log when hovering ends
+                if (!isLocked) {
+                    hideElements(index);
+                }
+            });
+
+            path.addEventListener("click", (event) => {
+                console.log(`Clicked on path ${index}`); // Log when the path is clicked
+                event.stopPropagation();
+                isLocked = true;
+                showElements(index);
+            });
+        });
+
+        // Click outside → hide and unlock
+        document.addEventListener("click", () => {
+            if (isLocked) {
+                paths.forEach((_, index) => hideElements(index));
+                isLocked = false;
+            }
+        });
+
+        // Prevent closing when clicking on the image/text
+        images.forEach((image) => {
+            image.addEventListener("click", (e) => e.stopPropagation());
+        });
+
+        texts.forEach((text) => {
+            text.addEventListener("click", (e) => e.stopPropagation());
+        });
+    </script>
+
+</body>
+</html>

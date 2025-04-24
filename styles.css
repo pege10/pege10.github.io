@@ -1,0 +1,143 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical scrolling */
+}
+
+/* Ensure the page is scrollable horizontally */
+.scroll-container {
+    position: relative;
+    height: 100vh; /* Match the viewport height */
+    width: max-content; /* Allow horizontal scrolling based on content width */
+    display: flex;
+    justify-content: flex-start; /* Align content to the left */
+    align-items: center;
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical scrolling */
+}
+.hover-target {
+    fill: transparent; /* Ensure the path is clickable */
+    stroke: transparent; /* Ensure the stroke is clickable */
+    stroke-width: 20; /* Make the interactive area larger */
+    pointer-events: all; /* Allow pointer events on the path */
+}
+
+.image-wrapper {
+    display: block;
+    height: auto;  /* Allow image height to grow */
+    width: 100%;    /* Always use full width of the screen */
+}
+
+/* Background image */
+.base-image {
+    width: auto; /* Allow the width to grow based on content */
+    height: 100vh; /* Match the height of the viewport */
+    object-fit: cover; /* Ensure the image covers the full height */
+    display: block;
+    margin: 0; /* Remove any margin */
+    max-width: none; /* Prevent width constraint */
+    position: relative;
+}
+
+/* Ensure that the container becomes scrollable horizontally */
+.scroll-container::-webkit-scrollbar {
+    height: 10px; /* Custom height for horizontal scrollbar */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5); /* Scrollbar color */
+}
+
+/* SVG and hover image container */
+.image-container {
+    position: absolute;
+    top: 0%; /* Adjust percentage to match the desired position */
+    left: 0%; /* Adjust percentage to match the desired position */
+    z-index: 2;
+    width: 100%; /* Scale relative to the background image */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* SVG */
+svg {
+    width: 100%; /* Scale with the container */
+    height: auto; /* Maintain aspect ratio */
+    position: relative;
+}
+
+/* PNG shown on hover */
+.hover-image {
+    position: absolute;
+    top: 62.04%;
+    left: 58.25%;
+    width: 2.45%; /* Scale with the container */
+    height: auto; /* Maintain aspect ratio */
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(1); /* Start at normal size */
+    pointer-events: none;
+}
+
+.hover-text {
+    width: 20%;
+    height: 50%;
+    font-size: 120%;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    background-color: rgba(0, 0, 0, 0);
+    padding: 50px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+p {
+    font-family: 'Courier New', Courier, monospace;
+}
+/* SVG path */
+.cls-1 {
+    fill: transparent;
+    stroke:transparent;
+    stroke-miterlimit: 0;
+}
+
+.screen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Show overlay and hover-image on hover */
+.hover-target:hover ~ .hover-image {
+    opacity: 1;
+    transform: scale(1.2);
+    z-index: 3;
+}
+
+.hover-target:hover ~ .hover-text {
+    opacity: 1;
+    z-index: 3;
+}
+
+.hover-target:hover ~ .screen-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
