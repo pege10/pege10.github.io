@@ -1,0 +1,242 @@
+/* import Geist Mono */
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap");
+
+:root {
+  --red: #ff0000;
+  --blue: #0186e5;
+  --black: #000;
+  --white: #fff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* hide vertical scroll */
+  background-color: #ff0000;
+}
+
+.scroll-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: scroll; /* ← always show and enable horizontal scroll */
+  overflow-y: hidden;
+  scroll-behavior: smooth; /* nice smooth scrolling */
+  
+}
+
+body,
+html {
+  font-family: "Geist Mono", monospace;
+}
+
+.container {
+  position: relative;
+  width: max-content; /* grows to fit all absolutely positioned children */
+  min-height: 100vh;
+  background: var(--red);
+}
+
+/* Decorative boxes */
+.decor-box {
+  position: absolute;
+  width: 331px;
+  height: 330px;
+  z-index: 3;
+}
+#box1 svg{
+  position: absolute;
+  height: 20vh;
+  width: 30vh;
+  top: -3vh;
+  left: 49.3vh;
+}
+#box2 svg{
+  position: absolute;
+  height: 20vh;
+  width: 30vh;
+  top: -3vh;
+  left: 78.6vh;
+}
+#box3 svg{
+  position: absolute;
+  height: 20vh;
+  width: 30vh;
+  top: -3vh;
+  left: 20vh;
+}
+
+.decor-box a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute; /* Ensure it moves with the box */
+  top: 0;
+  left: 0;
+}
+
+/* 3×3 logo/grid */
+.logo-grid svg{
+  position: absolute;
+  height: 8vh;
+  width: 30vh;
+  top: 3.5vh;
+  left: 50vh;
+  z-index: 4;
+}
+.grid-item {
+  position: absolute;
+  background: var(--black);
+}
+
+/* Headings */
+.heading {
+  position: absolute;
+  font-size: 36px;
+  font-weight: 700;
+  text-transform: uppercase;
+  word-wrap: break-word;
+  line-height: 1;
+  white-space: nowrap;
+}
+.red-text {
+  color: var(--red);
+  top: 7.5vh;
+  left: 35.5vh;
+  font-size: 3.5vh;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.white-text {
+  color: var(--white);
+  top: 7.5vh;
+  left: 93.5vh;
+  font-size: 3.5vh;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+.subheading {
+  position: absolute;
+  top: 281px;
+  left: 269px;
+  color: var(--black);
+  font-size: 36px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Content / Event / Visual Blocks */
+.content-block,
+.event-block,
+.visual-block {
+  position: absolute;
+  text-align: justify;
+  color: var(--black);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* specific block positions & widths */
+#block-mome-reorg {
+  left: 270px;
+  top: 280px;
+  width: 386px;
+}
+#block-forum {
+  left: 756px;
+  top: 280px;
+  width: 656px;
+}
+#block-taps {
+  left: 1512px;
+  top: 280px;
+  width: 550px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#block-sorfal {
+  left: 2808px;
+  top: 280px;
+  width: 360px;
+}
+#block-matricak {
+  left: 4590px;
+  top: 280px;
+  width: 395px;
+}
+#block-forum-visual {
+  left: 5832px;
+  top: 280px;
+  width: 428px;
+}
+
+/* Event & Visual titles */
+.event-block h3,
+.visual-block h3 {
+  font-size: 36px;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 36px;
+  margin-bottom: 8px;
+}
+
+/* Dates */
+.event-block time,
+.visual-block time {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Images in visual blocks */
+.images {
+  display: flex;
+  gap: 8px;
+}
+.images img {
+  max-width: 100%;
+  height: 100%; /* Match the height of the Flex container */
+  object-fit: contain; /* Ensure the image scales proportionally */
+}
+
+
+/* Timeline dots */
+.timeline {
+  position: absolute;
+  top: 900px;
+  left: 0;
+  display: flex;
+  padding-bottom: 120px;
+}
+.dot {
+  width: 54px;
+  height: 54px;
+  background: var(--black);
+}
+.dot.white {
+  background: var(--white);
+}
+
+p {
+  margin-top: 4em;     /* tweak as needed */
+}
+
+.container {
+
+  height: 100vh;
+  transform-origin: top left;
+  position: relative;
+  width: max-content;
+  background: var(--red);
+}
+

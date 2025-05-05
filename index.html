@@ -1,184 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MOME Fal</title>
-    <link rel="stylesheet" href="test.css">
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        .hover-target {
-            stroke: red;
-            stroke-width: 5;
-            pointer-events: all;
-        }
+      .hover-target {
+        stroke: red;
+        stroke-width: 0;
+        pointer-events: all;
+      }
     </style>
-</head>
-<body>
-    <div class="scroll-container">
-        <div class="image-wrapper">
-            <img src="images/fal.jpg" alt="fal" class="base-image">
-
-            <!-- Group 1 -->
-            <div class="image-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
-                    <path class="cls-1 hover-target" d="M8701.94,1585.92 L8549.15,1806 L8318.15,1835.10 L8178.10,1942.42 L8201.75,2169.78 L8432.74,2135.50 L8641.91,2169.78 L8923.84,1893.31 L8902.01,1642.30 L8701.94,1585.92 Z" />
-                </svg>
-                <img src="images/1_elfolyo_ido.png" alt="Hovered Image" class="hover-image-1">
-                <div class="hover-text-1">
-                    <h2>Az emlékezet állandósága</h2>
-                    <p>A MOME falára február 17-én egy különös szimbólum került fel: 
-                        egy elfolyó óra, amely Dalí Az emlékezet állandósága című festményét 
-                        idézi...</p>
-                </div>
-            </div>
-
-            <!-- Group 2 -->
-            <div class="image-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
-                    <path class="cls-1 hover-target" d="M9978.75,1243.27 L10300.62,1147.9 L10747.66,1195.59 L11433.12,1147.9 L12148.39,945.24 L13114,1130.02 L13161.68,1416.13 L12935.18,1714.15 L12082.82,1606.86 L10908.59,1904.89 L9978.75,1767.8 L9978.75,1243.27 Z" />
-                </svg>
-                <img src="images/2_robin_masters.png" alt="Hovered Image" class="hover-image-2">
-                <div class="hover-text-2">
-                    <h2>Who is Robin Masters</h2>
-                    <p>Robin Masters a wikipédia leírása alapján a Magnum című sorozat gyakran emlegetett és az eseményekre rendszerint befolyással rendelkező, ám a néző számára tökéletesen ismeretlen szereplője...</p>
-                </div>
-            </div>
-
-            <!-- Group 3 -->
-            <div class="image-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
-                    <path class="cls-1 hover-target" d="M11363.53,2985.01 l-446.56,135.91c-1.62,75.24-3.24,150.47-4.85,225.71,33.98,67.15,67.96,134.29,101.93,201.44l480.54-31.55,378.61-199.01-152.9-283.95-356.76-48.54Z" />
-                </svg>
-                <img src="images/3_megmerettettel.png" alt="Hovered Image" class="hover-image-3">
-                <div class="hover-text-3">
-                    <h2>Megmérettél és könnyűnek találtál</h2>
-                    <p>szólásként a jelentése...</p>
-                </div>
-            </div>
-
-            <!-- Group 4 -->
-<div class='image-container'>
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15000 4271' class='cls-1'>
-        <path class='cls-1 hover-target' d="M7643.51,1655.29L7209.82,1655.29L6765.96,1790.82L6782.9,2170.3L7204.74,2251.62L7500,2082.21L8131.42,2251.62L8395.7,2044.94L8131.42,1780.66L7643.51,1655.29Z
-           M2691.05,1920.7l-415.62,45.18-411.1,262.02c-24.85,89.6-49.69,179.2-74.54,268.8,24.85,67.01,49.69,134.02,74.54,201.03,85.84,15.06,171.67,30.12,257.51,45.18l374.96-144.56,266.54-266.54v-275.58l-72.28-135.53Z
-           M6097.35,3662.25L5894.06,3702.91L5765.31,3929.92L5812.74,4204.37L6066.86,4177.26L6232.88,3933.31L6232.88,3757.12L6097.35,3662.25Z"/>
-    </svg>
-    <img src='images/4_toygmoe.png' alt='Hovered Image' class='hover-image-4'>
-    <div class='hover-text-4'>
-        <h2>TOYGMOE</h2>
-        <p>Az egyetemi legendárium szerint a “TOYGMOE” egy graffitis tag, amelyet Böszörményi Nagy Gergely (BNG) használt fiatalabb korában. Bár erre nincs hivatalos bizonyíték, a MOME hallgatói ezt a nevet felvésték a nagyméretű falfestményre, amely ironikusan reflektál az egyetem korábbi vezetésére. A graffiti tag pontos jelentése ismeretlen, és valószínűleg csak a beavatottak számára volt érthető, ám az, hogy most egy kritikát megfogalmazó művészeti akció részeként bukkan fel, azt mutatja, hogy a hallgatók ezzel a legendával is hozzájárultak az intézmény körüli diskurzushoz.</p>
+  </head>
+  <body>
+    <div class="decor-box-all">
+      <div class="decor-box red" id="box1">
+        <!-- 3×3 logo/grid -->
+        <div class="logo-grid">
+          <a href="https://mome.unifront.hu/" target="_blank">
+            <svg
+              width="156"
+              height="77"
+              viewBox="0 0 156 77"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_4_116)">
+                <path
+                  d="M55.0132 0.152588H70.4733L81.3437 11.023L81.312 26.1971L70.4733 37.0993H55.1403L44.2699 26.2289V10.8959L55.0132 0.152588Z"
+                  fill="black"
+                />
+                <path
+                  d="M65.1844 39.5658H80.5174L91.3878 50.4362V65.6421L80.5174 76.5125H65.1844L54.314 65.6421V50.4362L65.1844 39.5658Z"
+                  fill="black"
+                />
+                <path
+                  d="M20.3423 0L26.698 22.7579L32.802 0H41.2567L41.4475 0.190709V37.1247H33.6919V25.4279L30.4397 37.1323L22.7503 37.0688L19.4523 25.4279V37.1247H11.6968V0.190709L11.8875 0H20.3423Z"
+                  fill="black"
+                />
+                <path
+                  d="M92.6846 0L98.9767 22.7592L105.144 0H113.599L113.79 0.190709V37.1247H106.034V25.4279L102.782 37.1323L95.0952 37.0662L91.7946 25.4279V37.1247H84.0391V0.190709L84.2298 0H92.6846Z"
+                  fill="black"
+                />
+                <path
+                  d="M106.352 39.4132L116.205 67.0024V39.6039L116.396 39.4132H123.77L123.961 39.6039V76.5379H111.755L101.966 48.9487V76.5379H94.3374L94.401 39.4132H106.352Z"
+                  fill="black"
+                />
+                <path
+                  d="M145.829 7.7555H123.834V14.4939H139.853V22.0587L139.663 22.2494H123.834V29.3692H145.638L145.829 29.5599V37.1247H116.078V0.190709L116.269 0H145.638L145.829 0.190709V7.7555Z"
+                  fill="black"
+                />
+                <path
+                  d="M26.5721 39.4132C30.5834 39.5543 34.7218 39.2263 38.719 39.4081C45.2642 39.7056 50.4069 43.605 51.3491 50.2989C51.9784 54.7666 49.784 59.7072 46.041 62.189L46.0181 62.3555L56.0672 76.5379H47.4217L39.1577 64.4597H34.1992V76.5379H26.5709V39.4132H26.5721ZM34.2005 56.7042H39.6039C41.7958 56.7042 43.6762 54.1525 43.7423 52.0687C43.8122 49.8552 41.9687 47.1687 39.6039 47.1687H34.2005V56.7042Z"
+                  fill="black"
+                />
+                <path
+                  d="M23.7751 47.1687H7.7555V56.8313H23.7751V64.5868H7.7555V76.5379H0V39.6039L0.190709 39.4132H23.5844L23.7751 39.6039V47.1687Z"
+                  fill="black"
+                />
+                <path
+                  d="M156 47.1687H145.13L144.939 47.3594V76.5379H137.311V47.1687H126.249V39.6039L126.44 39.4132H155.809L156 39.6039V47.1687Z"
+                  fill="black"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_4_116">
+                  <rect width="156" height="76.5379" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </a>
+        </div>
+        <svg
+          width="331"
+          height="225"
+          viewBox="0 0 331 225"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <a href="https://mome.unifront.hu/" target="_blank">
+            <path
+              d="M95.0419 -104.121C95.6045 -104.684 96.3678 -105 97.1636 -105H232.701C233.497 -105 234.26 -104.684 234.823 -104.121L330.119 -8.78555C330.683 -8.22149 330.999 -7.45615 330.998 -6.65863L330.73 126.398C330.728 127.188 330.415 127.946 329.858 128.507L234.824 224.115C234.261 224.681 233.495 225 232.696 225H98.2988C97.5029 225 96.7397 224.684 96.177 224.121L0.878246 128.783C0.315903 128.22 0 127.458 0 126.662V-7.79778C0 -8.59322 0.315902 -9.35609 0.878245 -9.91866L95.0419 -104.121Z"
+              fill="#FF0000"
+            />
+          </a>
+        </svg>
+      </div>
+      <div class="decor-box blue" id="box2">
+        <a href="timeline.html">
+          <h1 class="heading white-text">idővonal</h1>
+        </a>
+        <svg
+          width="331"
+          height="225"
+          viewBox="0 0 331 225"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g clip-path="url(#clip0_4_112)">
+            <a href="timeline.html">
+              <path
+                d="M95.9206 -105H233.944L331 -7.90444L330.728 127.632L233.944 225H97.0558L0 127.904V-9.04006L95.9206 -105Z"
+                fill="#0186E5"
+              />
+            </a>
+          </g>
+          <defs>
+            <clipPath id="clip0_4_112">
+              <rect
+                width="331"
+                height="330"
+                fill="white"
+                transform="translate(0 -105)"
+              />
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+      <div class="decor-box black" id="box3">
+        <a href="index.html">
+          <h1 class="heading red-text">A fal</h1>
+        </a>
+        <svg
+          width="331"
+          height="225"
+          viewBox="0 0 331 225"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <a href="index.html">
+            <path
+              d="M95.9206 -105H233.944L331 -7.90444L330.728 127.632L233.944 225H97.0558L0 127.904V-9.04006L95.9206 -105Z"
+              fill="black"
+            />
+          </a>
+        </svg>
+      </div>
     </div>
+    <div class="scroll-container">
+      <div class="image-wrapper">
+        <img src="images/fal.jpg" alt="fal" class="base-image" />
+
+        <!-- Group 1 -->
+        <div class="image-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 15000 4271"
+            class="cls-1"
+          >
+            <path
+              class="cls-1 hover-target"
+              d="M8701.94,1585.92 L8549.15,1806 L8318.15,1835.10 L8178.10,1942.42 L8201.75,2169.78 L8432.74,2135.50 L8641.91,2169.78 L8923.84,1893.31 L8902.01,1642.30 L8701.94,1585.92 Z"
+            />
+          </svg>
+          <img
+            src="images/1_elfolyo_ido.png"
+            alt="Hovered Image"
+            class="hover-image-1"
+          />
+          <div class="hover-text-1">
+            <h2>Az emlékezet állandósága</h2>
+            <p>
+              A MOME falára február 17-én egy különös szimbólum került fel: egy
+              elfolyó óra, amely Dalí Az emlékezet állandósága című festményét
+              idézi. Az óra jelképezi az idő kettős természetét mint a
+              tiltakozás szimbólumát, míg a vezetés számára az ultimátumok
+              határideje elmosható, az autonómia kérdése végtelenségig
+              lebegtethető, addig a hallgatók számára a türelmi idő
+              végérvényesen lejárt. A falra került óra a hatalom által
+              elnyújtott döntéshozatal és a tiltakozók sürgető valóságának
+              ellentmondását örökítette meg, az emlékezet konzerválásának
+              eszközeként. Az idő elfolyhat, a hatalmi szerkezetek
+              átalakulhatnak, de a falra festett motívumok és az egyetem
+              autonómiájáért folytatott küzdelem nyoma kitörölhetetlen marad.
+            </p>
+          </div>
+        </div>
+
+        <!-- Group 2 -->
+        <div class="image-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 15000 4271"
+            class="cls-1"
+          >
+            <path
+              class="cls-1 hover-target"
+              d="M9978.75,1243.27 L10300.62,1147.9 L10747.66,1195.59 L11433.12,1147.9 L12148.39,945.24 L13114,1130.02 L13161.68,1416.13 L12935.18,1714.15 L12082.82,1606.86 L10908.59,1904.89 L9978.75,1767.8 L9978.75,1243.27 Z"
+            />
+          </svg>
+          <img
+            src="images/2_robin_masters.png"
+            alt="Hovered Image"
+            class="hover-image-2"
+          />
+          <div class="hover-text-2">
+            <h2>Who is Robin Masters?</h2>
+            <p>
+              Robin Masters a wikipédia leírása alapján a Magnum című sorozat
+              gyakran emlegetett és az eseményekre rendszerint befolyással
+              rendelkező, ám a néző számára tökéletesen ismeretlen szereplője.
+              Az egyetemi legendárium alapján Robin Masters Böszörményi Nagy
+              Gergely szerzői álneve volt, melyen a mandiner.blog oldalon
+              jelentetett meg különféle írásokat a 2010-es évek elején. Lásd:
+              Kedves Dorottya! - Mandiner blog A MOME Front plakátjain
+              visszatérő momentum a rektort irányító, ám láthatatlan személy,
+              amely szintén BNG-re utal.
+            </p>
+          </div>
+        </div>
+
+        <!-- Group 3 -->
+        <div class="image-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 15000 4271"
+            class="cls-1"
+          >
+            <path
+              class="cls-1 hover-target"
+              d="M11363.53,2985.01 l-446.56,135.91c-1.62,75.24-3.24,150.47-4.85,225.71,33.98,67.15,67.96,134.29,101.93,201.44l480.54-31.55,378.61-199.01-152.9-283.95-356.76-48.54Z"
+            />
+          </svg>
+          <img
+            src="images/3_megmerettettel.png"
+            alt="Hovered Image"
+            class="hover-image-3"
+          />
+          <div class="hover-text-3">
+            <h2>Megmérettél és könnyűnek találtál</h2>
+            <p>
+              A “megmérettél és könnyűnek találtál” egy bibliai eredetű szólás,
+              Dániel próféta könyvének 5. részéből, amelyet természetfeletti
+              erők írtak Baltazár babiloni király palotájának falára a zsidó
+              templom tárgyait megszentségtelenítő lakoma alatt, és amely
+              megjósolta uralma végét. Ez a szólás jelen esetben a rektor felé
+              érzett bizalmi válságra utal. Továbbá célozhat az, ugyanezen a
+              címen megjelent mandiner cikkre is, ami Mérő László kormány
+              kritikáját, és unblock az ellenzéki gyűlölködést taglalja. Nem
+              teljesen egyértelmű, hogy mi a párhuzam a cikk és a szólás
+              története között.
+              https://mandiner.hu/belfold/2025/03/megmerettel-es-konnyunek-talaltattal
+            </p>
+          </div>
+        </div>
+
+        <!-- Group 4 -->
+        <div class="image-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 15000 4271"
+            class="cls-1"
+          >
+            <path
+              class="cls-1 hover-target"
+              d="M7643.51,1655.29L7209.82,1655.29L6765.96,1790.82L6782.9,2170.3L7204.74,2251.62L7500,2082.21L8131.42,2251.62L8395.7,2044.94L8131.42,1780.66L7643.51,1655.29Z
+           M2691.05,1920.7l-415.62,45.18-411.1,262.02c-24.85,89.6-49.69,179.2-74.54,268.8,24.85,67.01,49.69,134.02,74.54,201.03,85.84,15.06,171.67,30.12,257.51,45.18l374.96-144.56,266.54-266.54v-275.58l-72.28-135.53Z
+           M6097.35,3662.25L5894.06,3702.91L5765.31,3929.92L5812.74,4204.37L6066.86,4177.26L6232.88,3933.31L6232.88,3757.12L6097.35,3662.25Z"
+            />
+          </svg>
+          <img
+            src="images/4_toygmoe.png"
+            alt="Hovered Image"
+            class="hover-image-4"
+          />
+          <div class="hover-text-4">
+            <h2>TOYGMOE</h2>
+            <p>
+              Az egyetemi legendárium szerint a “TOYGMOE” egy graffitis tag,
+              amelyet Böszörményi Nagy Gergely (BNG) használt fiatalabb korában.
+              Bár erre nincs hivatalos bizonyíték, a MOME hallgatói ezt a nevet
+              felvésték a nagyméretű falfestményre, amely ironikusan reflektál
+              az egyetem korábbi vezetésére. A graffiti tag pontos jelentése
+              ismeretlen, és valószínűleg csak a beavatottak számára volt
+              érthető, ám az, hogy most egy kritikát megfogalmazó művészeti
+              akció részeként bukkan fel, azt mutatja, hogy a hallgatók ezzel a
+              legendával is hozzájárultak az intézmény körüli diskurzushoz.
+            </p>
+          </div>
+        </div>
+
+        <!-- Group 5 -->
+        <div class="image-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 15000 4271"
+            class="cls-1"
+          >
+            <path
+              class="cls-1 hover-target"
+              d="
+M7776.14,1414.33 L8178.1,1204.7 L8721.25,1309.51 L8675.07,1805.16 L8178.1,1942.42 L7776.14,1862.01 L7776.14,1414.33 Z
+M13510.76,3695.38 L13592.48,4146.62 L14022.4,3983.18 L13812.77,3599.45 L13510.76,3695.38 Z
+M10938.36,1997.03 L11528.16,1911.76 L11528.16,2107.17 L10938.36,2135.5 L10938.36,1997.03 Z
+M478.19,2967.01 L311.2,3144.66 L332.51,3542.6 L574.12,3507.07 L861.92,3386.27 L883.24,3084.26 L478.19,2967.01 Z
+M730.45,3688.28 L833.49,3340.08 L1739.52,3382.72 L3086.12,3407.59 L2812.54,4047.14 L787.3,3961.86 L730.45,3688.28 Z"
+            />
+          </svg>
+          <img
+            src="images/5_game_over.png"
+            alt="Hovered Image"
+            class="hover-image-5"
+          />
+          <div class="hover-text-5">
+            <h2>GAME OVER</h2>
+            <p>
+              Böszörményi-Nagy Gergely által viselt “NINTENDO” logós öltözetre
+              reflektál, valamint arra, hogy a kuratórium által folytatott
+              egyetem-politikának vége.
+            </p>
+          </div>
+        </div>
+
+        <!-- Group 9 -->
+<div class='image-container'>
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15000 4271' class='cls-1'>
+      <path class='cls-1 hover-target' d="M6436.87 2276.8 L6512.38 2101.94 L6687.23 2006.57 L6874.01 2078.1 L6921.69 2256.93 L6889.9 2407.94 L6774.66 2511.26 L6623.65 2511.26 L6484.56 2411.91 L6436.87 2276.8 Z
+ M7672.77 2328.46 L7740.33 2185.39 L7859.55 2090.02 L7990.69 2090.02 L8129.78 2209.24 L8169.52 2328.46 L8105.93 2459.6 L7986.71 2554.97 L7871.47 2554.97 L7724.43 2463.57 L7672.77 2328.46 Z
+ M6599.8 3449.11 L6774.66 3337.84 L6897.85 3369.63 L7017.07 3480.9 L7040.91 3619.99 L6997.2 3723.31 L6921.69 3790.87 L6838.24 3830.61 L6734.92 3830.61 L6599.8 3743.18 L6560.06 3639.86 L6560.06 3532.57 L6599.8 3449.11 Z
+ M8070.17 3516.67 L8070.17 3417.32 L8141.7 3337.84 L8272.84 3270.28 L8400 3270.28 L8503.33 3377.58 L8531.14 3516.67 L8499.35 3667.68 L8396.03 3743.18 L8241.05 3743.18 L8109.91 3679.6 L8070.17 3584.23 L8070.17 3516.67 Z
+ M9282.22 2531.13 L9302.09 2427.81 L9357.73 2340.38 L9488.87 2296.67 L9612.06 2296.67 L9687.57 2384.09 L9751.15 2531.13 L9703.46 2650.35 L9639.88 2741.75 L9516.69 2773.54 L9369.65 2721.88 L9282.22 2602.66 L9282.22 2531.13 Z
+ M9895.16 3114.21 L10012.96 3194.81 L10180.35 3194.81 L10304.35 3114.21 L10366.34 2959.22 L10329.15 2810.42 L10205.15 2698.83 L10056.36 2698.83 L9926.16 2773.54 L9864.17 2946.82 L9895.16 3114.21 Z
+ M11976.31 3201.77 L12111.86 3134 L12283.41 3167.89 L12368.13 3318.26 L12355.42 3438.98 L12308.83 3523.7 L12224.11 3574.53 L12084.32 3574.53 L11991.14 3532.17 L11921.24 3430.51 L11921.24 3330.97 L11976.31 3201.77 Z"/>
+  </svg>
+  <img src='images/9_bauhaus_logok.png'Hovered Image' class='hover-image-9'>
+  <div class='hover-text-9'>
+      <h2>A síró Bauhaus szimbólum</h2>
+      <p>Az eredeti geometrikus és absztrakt emberi arcot ábrázoló emblémát Oskar Schlemmer tervezte, melyet 1922-től a Bauhaus rendszeresen használt. Ez a logó a minimalizmus, a funkcionalizmus és a modernitás jegyében született, a Bauhaus progresszív, kísérletező, szabad gondolkodásra épülő szellemiségét jelképezve.
+A síró Bauhaus szimbólum jelen esetben arra utal, hogy a diákok szerint ezek az értékek veszélybe kerültek a jelenlegi oktatásban, mivel az egyetem vagy annak vezetése eltávolodik a Bauhaus demokratikus és modernista alapelveitől, ami a művészet és a design szabadságának csorbulását eredményezi.
+A MOME FRONT arculatának egyik tervezője szerint a szervezet brandjének fontos része Moholy-Nagy László személye, illetve az az elgondolás, hogy ha még itt lenne, mennyire ki lenne ábrándulva abból, ami az ő nevével fémjelezett intézményen belül történik. A síró Bauhaus arc is ennek az érzésnek a kivetülése.</p>
+  </div>
 </div>
 
-            <!-- Group 5 -->
-            <div class="image-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
-                    <path class="cls-1 hover-target" d="" />
-                </svg>
-                <img src="images/.png" alt="Hovered Image" class="hover-image-5">
-                <div class="hover-text-5">
-                    <h2></h2>
-                    <p></p>
-                </div>
-            </div>
 
-            <!-- Group 7 -->
-            <div class="image-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15000 4271" class="cls-1">
-                    <path class="cls-1 hover-target" d="" />
-                </svg>
-                <img src="images/.png" alt="Hovered Image" class="hover-image-7">
-                <div class="hover-text-7">
-                    <h2></h2>
-                    <p></p>
-                </div>
-            </div>
-
-            <div class="screen-overlay"></div>
-        </div>
+        <div class="screen-overlay"></div>
+      </div>
     </div>
 
     <script>
-        const paths = document.querySelectorAll('.hover-target');
-        const images = document.querySelectorAll('[class^="hover-image"]');
-        const texts = document.querySelectorAll('[class^="hover-text"]');
-        const overlay = document.querySelector('.screen-overlay');
+      const paths = document.querySelectorAll(".hover-target");
+      const images = document.querySelectorAll('[class^="hover-image"]');
+      const texts = document.querySelectorAll('[class^="hover-text"]');
+      const overlay = document.querySelector(".screen-overlay");
 
-        console.log('Paths length:', paths.length);
-        paths.forEach((path, index) => {
-            console.log(`Path ${index}:`, path);
+      let isLocked = false;
+
+      function showElements(index) {
+        // Hide all other elements
+        images.forEach((image, i) => {
+          if (i !== index) {
+            image.style.opacity = "0";
+            image.style.transform = "scale(1)";
+            image.style.zIndex = "1";
+          }
         });
-        images.forEach((image, index) => {
-            console.log(`Image ${index}:`, image);
+
+        texts.forEach((text, i) => {
+          if (i !== index) {
+            text.style.opacity = "0";
+            text.style.zIndex = "1";
+          }
         });
-        texts.forEach((text, index) => {
-            console.log(`Text ${index}:`, text);
+
+        // Show the selected elements
+        images[index].style.opacity = "1";
+        images[index].style.transform = "scale(1.0)"; // SET SCALE SIZE
+        images[index].style.zIndex = "3";
+
+        texts[index].style.opacity = "1";
+        texts[index].style.zIndex = "3";
+
+        overlay.style.opacity = "1";
+        overlay.style.pointerEvents = "auto";
+      }
+
+      function hideElements(index) {
+        images[index].style.opacity = "0";
+        images[index].style.transform = "scale(1)";
+        images[index].style.zIndex = "1";
+
+        texts[index].style.opacity = "0";
+        texts[index].style.zIndex = "1";
+
+        overlay.style.opacity = "0";
+        overlay.style.pointerEvents = "none";
+      }
+
+      paths.forEach((path, index) => {
+        path.addEventListener("mouseenter", () => {
+          if (!isLocked) {
+            showElements(index); // Scale up and reset back
+          }
         });
 
-        let isLocked = false;
+        path.addEventListener("mouseleave", () => {
+          if (!isLocked) {
+            hideElements(index); // Hide elements on mouse leave
+          }
+        });
 
-        function showElements(index) {
-            images[index].style.opacity = '1';
-            images[index].style.transform = 'scale(1.2)';
-            images[index].style.zIndex = '3';
+        path.addEventListener("click", (event) => {
+          event.stopPropagation();
+          isLocked = true;
+          showElements(index); // Keep the element scaled up on click
+        });
+      });
 
-            texts[index].style.opacity = '1';
-            texts[index].style.zIndex = '3';
-
-            overlay.style.opacity = '1';
-            overlay.style.pointerEvents = 'auto';
+      document.addEventListener("click", () => {
+        if (isLocked) {
+          paths.forEach((_, index) => hideElements(index));
+          isLocked = false;
         }
+      });
 
-        function hideElements(index) {
-            images[index].style.opacity = '0';
-            images[index].style.transform = 'scale(1)';
-            images[index].style.zIndex = '1';
+      images.forEach((image) => {
+        image.addEventListener("click", (e) => e.stopPropagation());
+      });
 
-            texts[index].style.opacity = '0';
-            texts[index].style.zIndex = '1';
+      texts.forEach((text) => {
+        text.addEventListener("click", (e) => e.stopPropagation());
+      });
 
-            overlay.style.opacity = '0';
-            overlay.style.pointerEvents = 'none';
-        }
+      document.addEventListener("DOMContentLoaded", () => {
+        const svgElement = document.querySelector("#box2 svg");
+        const leftElement = document.querySelector("#left");
 
-        paths.forEach((path, index) => {
-            path.addEventListener('mouseenter', () => {
-                console.log(`Hovered on path ${index}`);
-                if (!isLocked) {
-                    showElements(index);
-                }
-            });
-
-            path.addEventListener('mouseleave', () => {
-                console.log(`Mouse left path ${index}`);
-                if (!isLocked) {
-                    hideElements(index);
-                }
-            });
-
-            path.addEventListener('click', (event) => {
-                console.log(`Clicked on path ${index}`);
-                event.stopPropagation();
-                isLocked = true;
-                showElements(index);
-            });
+        svgElement?.addEventListener("click", (e) => {
+          e.preventDefault();
+          leftElement?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "start",
+          });
         });
-
-        document.addEventListener('click', () => {
-            if (isLocked) {
-                paths.forEach((_, index) => hideElements(index));
-                isLocked = false;
-            }
-        });
-
-        images.forEach((image) => {
-            image.addEventListener('click', (e) => e.stopPropagation());
-        });
-
-        texts.forEach((text) => {
-            text.addEventListener('click', (e) => e.stopPropagation());
-        });
+      });
     </script>
-
-</body>
+  </body>
 </html>
