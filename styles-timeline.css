@@ -157,25 +157,131 @@ html {
 #block-taps {
   left: 1512px;
   top: 280px;
-  width: 550px;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  gap: 50px;
+  align-items: flex-start;
 }
+
+#block-taps .text-column p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 19; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  width: 400px;
+}
+
+#block-taps .image-column {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: stretch;
+}
+
+#block-taps .image-column img {
+  margin: 105px 0;
+  height: 260px;       /* Or 180px, depending on your visual needs */
+  width: auto;         /* Maintain aspect ratio */
+  object-fit: cover;
+}
+
 #block-sorfal {
   left: 2808px;
   top: 280px;
-  width: 360px;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  align-items: flex-start;
 }
+
+#block-sorfal .text-column p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 17;
+  -webkit-box-orient: vertical;
+  width: 400px;
+}
+
+#block-sorfal .image-column {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: stretch;
+}
+
+#block-sorfal .image-column img {
+  margin: 105px 0;
+  height: 260px;
+  width: auto;
+  object-fit: cover;
+}
+
+/* Matricák block */
 #block-matricak {
   left: 4590px;
   top: 280px;
-  width: 395px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: flex-start;
 }
+
+#block-matricak .text-column p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 19;
+  -webkit-box-orient: vertical;
+  width: 400px;
+}
+
+#block-matricak .image-column {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: stretch;
+}
+
+#block-matricak .image-column img {
+  margin: 12px 0;
+  height: 260px;
+  width: auto;
+  object-fit: cover;
+}
+
+/* Forum block */
 #block-forum-visual {
-  left: 5832px;
+  left: 6100px;
   top: 280px;
-  width: 428px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: flex-start;
+}
+
+#block-forum-visual .text-column p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 19;
+  -webkit-box-orient: vertical;
+  width: 400px;
+}
+
+#block-forum-visual .image-column {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: stretch;
+}
+
+#block-forum-visual .image-column img {
+  margin: 12px 0;
+  height: 260px;
+  width: auto;
+  object-fit: cover;
 }
 
 /* Event & Visual titles */
@@ -204,8 +310,8 @@ html {
   gap: 8px;
 }
 .images img {
-  max-width: 100%;
-  height: 100%; /* Match the height of the Flex container */
+  max-width: 10%;
+  height: 10%; /* Match the height of the Flex container */
   object-fit: contain; /* Ensure the image scales proportionally */
 }
 
@@ -239,4 +345,11 @@ p {
   width: max-content;
   background: var(--red);
 }
+
+.scroll-spacer {
+  width: 5800px; /* Adjust as needed */
+  height: 0px;
+  display: inline-block;
+}
+
 
