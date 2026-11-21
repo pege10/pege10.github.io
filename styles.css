@@ -1,458 +1,574 @@
-html,
-body {
-  font-family: "Geist Mono", monospace;
-  font-size: 1.5vh;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  overflow-x: auto; /* Allow horizontal scrolling */
-  overflow-y: hidden; /* Prevent vertical scrolling */
-  background-color: black;
-}
-
-/* Ensure the page is scrollable horizontally */
-.scroll-container {
-  position: relative;
-  height: 100vh; /* Match the viewport height */
-  width: max-content; /* Allow horizontal scrolling based on content width */
-  display: flex;
-  justify-content: flex-start; /* Align content to the left */
-  align-items: center;
-  overflow-x: scroll; /* Enable horizontal scrolling */
-  overflow-y: hidden; /* Prevent vertical scrolling */
-}
-.hover-target {
-  fill: transparent; /* Ensure the path is clickable */
-  stroke: transparent; /* Ensure the stroke is clickable */
-  stroke-width: 20; /* Make the interactive area larger */
-  pointer-events: all; /* Allow pointer events on the path */
-}
-
-.image-wrapper {
-  display: block;
-  height: auto; /* Allow image height to grow */
-  width: 100%; /* Always use full width of the screen */
-}
-
-/* Background image */
-.base-image {
-  width: auto; /* Allow the width to grow based on content */
-  height: 100vh; /* Match the height of the viewport */
-  object-fit: cover; /* Ensure the image covers the full height */
-  display: block;
-  margin: 0; /* Remove any margin */
-  max-width: none; /* Prevent width constraint */
-  position: relative;
-}
-
-/* Ensure that the container becomes scrollable horizontally */
-.scroll-container::-webkit-scrollbar {
-  height: 10px; /* Custom height for horizontal scrollbar */
-}
-
-.scroll-container::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.5); /* Scrollbar color */
-}
-
-/* SVG and hover image container */
-.image-container {
-  position: absolute;
-  top: 0%; /* Adjust percentage to match the desired position */
-  left: 0%; /* Adjust percentage to match the desired position */
-  z-index: 2;
-  width: 100%; /* Scale relative to the background image */
-  height: auto; /* Maintain aspect ratio */
-  pointer-events: none;
-}
-
-/* SVG */
-svg {
-  width: 100%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  position: relative;
-}
-
-/* HOVER SECTION START */
-
-/* GROUP 1 */
-
-.hover-image-1 {
-  position: absolute;
-  top: 37.132287520487%;
-  left: 54.5206666666667%;
-  width: 4.9716%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(1); /* Start at normal size */
-  pointer-events: none;
-}
-
-.hover-target:hover ~ .hover-image-1 {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 3;
-}
-
-.hover-text-1 {
-  width: 20%;
-  height: 50%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 37%;
-  left: 44%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 50px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-
-.hover-target:hover ~ .hover-text-1 {
-  opacity: 1;
-  z-index: 3;
-}
-
-/* GROUP 2 */
-
-.hover-image-2 {
-  position: absolute;
-  top: 22.1315851088738%;
-  left: 66.525%;
-  width: 21.2195333333333%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(1); /* Start at normal size */
-  pointer-events: none;
-}
-
-.hover-target:hover ~ .hover-image-2 {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 3;
-}
-
-.hover-text-2 {
-  width: 20%;
-  height: 50%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 76%;
-  left: 80%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 50px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-
-.hover-target:hover ~ .hover-text-2 {
-  opacity: 1;
-  z-index: 3;
-}
-
-/* GROUP 3 */
-
-.hover-image-3 {
-  position: absolute;
-  top: 69.8901896511356%;
-  left: 72.7474666666667%;
-  width: 6.4072%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(1); /* Start at normal size */
-  pointer-events: none;
-}
-
-.hover-target:hover ~ .hover-image-3 {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 3;
-}
-
-.hover-text-3 {
-  width: 20%;
-  height: 50%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 63%;
-  left: 72%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 50px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-
-.hover-target:hover ~ .hover-text-3 {
-  opacity: 1;
-  z-index: 3;
-}
-
-/* GROUP 4 */
-
-.hover-image-4 {
-  position: absolute;
-  top: 38%;
-  left: 11.5%;
-  width: 45%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(1); /* Start at normal size */
-  pointer-events: none;
-}
-
-.hover-target:hover ~ .hover-image-4 {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 3;
-}
-
-.hover-text-4 {
-  width: 20%;
-  height: 50%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 70%;
-  left: 33%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 50px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-
-.hover-target:hover ~ .hover-text-4 {
-  opacity: 1;
-  z-index: 3;
-}
-
-/* GROUP 5 */
-
-.hover-image-5 {
-  position: absolute;
-  top: 28.2065090142824%;
-  left: 2.07466666666667%;
-  width: 91.408%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(1); /* Start at normal size */
-  pointer-events: none;
-}
-
-.hover-target:hover ~ .hover-image-5 {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 3;
-}
-
-.hover-text-5 {
-  width: 20%;
-  height: 50%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 70%;
-  left: 30%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 50px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-
-.hover-target:hover ~ .hover-text-5 {
-  opacity: 1;
-  z-index: 3;
-}
-
-/* GROUP 9 */
-
-.hover-image-9 {
-  position: absolute;
-  top: 46.9812690236479%;
-  left: 42.9124666666667%;
-  width: 39.5417333333333%; /* Scale with the container */
-  height: auto; /* Maintain aspect ratio */
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(1); /* Start at normal size */
-  pointer-events: none;
-}
-
-.hover-target:hover ~ .hover-image-9 {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 3;
-}
-
-.hover-text-9 {
-  width: 20%;
-  height: 50%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 37%;
-  left: 65%;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 50px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-
-.hover-target:hover ~ .hover-text-9 {
-  opacity: 1;
-  z-index: 3;
-}
-
-/* HOVER SECTION END */
-
-p {
-  font-family: "Geist Mono", monospace;
-}
-/* SVG path */
-.cls-1 {
-  fill: transparent;
-  stroke: transparent;
-  stroke-miterlimit: 0;
-}
-
-.screen-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-/* Show overlay and hover-image on hover */
-
-.hover-target:hover ~ .screen-overlay {
-  opacity: 1;
-  pointer-events: auto;
-}
+/* FRONTOPEDIA | a fal + az idővonal egy oldalon, közös fejléccel */
 
 :root {
   --red: #ff0000;
   --blue: #0186e5;
   --black: #000;
   --white: #fff;
+  --octagon: polygon(29.3% 0, 70.7% 0, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0 70.7%, 0 29.3%);
+  /* a fal kép natív mérete: ebben a koordinátarendszerben vannak az ábrák */
+  --wall-w: 15000;
+  --wall-h: 4271;
 }
 
-.decor-box {
-  position: absolute;
-  width: 331px;
-  height: 330px;
-  z-index: 3;
-}
-
-#box1 svg {
-  position: absolute;
-  height: 20vh;
-  width: 30vh;
-  top: -3vh;
-  left: 49.3vh;
-}
-
-#box2 svg {
-  position: absolute;
-  height: 20vh;
-  width: 30vh;
-  top: -3vh;
-  left: 78.6vh;
-}
-
-#box3 svg {
-  position: absolute;
-  height: 20vh;
-  width: 30vh;
-  top: -3vh;
-  left: 20vh;
-}
-
-.decor-box a {
-  display: block;
-  width: 100%;
+html,
+body {
+  margin: 0;
   height: 100%;
-  position: absolute;
+  overflow: hidden;
+  font-family: "Geist Mono", monospace;
+}
+
+body.is-wall {
+  background: var(--black);
+}
+
+body.is-timeline {
+  background: var(--red);
+}
+
+.view {
+  position: fixed;
+  inset: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.view[hidden] {
+  display: none !important;
+}
+
+/* ---------- Fejléc: három nyolcszög-fül, mindkét nézetben ugyanaz ---------- */
+
+.site-nav {
+  position: fixed;
   top: 0;
-  left: 0;
+  left: 20.3vh;
+  z-index: 40;
+  display: flex;
+  transition: transform 0.3s ease-in-out;
 }
 
-.logo-grid svg {
-  position: absolute;
-  height: 8vh !important;
-  width: 30vh !important;
-  top: 3.5vh !important;
-  left: 50vh !important;
-  z-index: 4;
+.tab {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 29.4vh;
+  height: 17vh;
+  /* 1px átfedés, hogy két fül között ne villanjon át a háttér */
+  margin-right: -1px;
+  clip-path: polygon(0 0, 100% 0, 100% 49%, 70.7% 100%, 29.3% 100%, 0 49%);
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
-.heading {
+.tab-fal {
+  background: var(--black);
+  color: var(--red);
+}
+
+.tab-front {
+  background: var(--red);
+}
+
+body.is-timeline .tab-front {
+  background: var(--white);
+}
+
+.tab-idovonal {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.tab-label,
+.tab-front svg {
   position: absolute;
-  font-size: 36px;
+  left: 50%;
+  top: 7.5vh;
+  transform: translate(-50%, -50%);
+}
+
+.tab-label {
+  font-size: 3.5vh;
   font-weight: 700;
-  text-transform: uppercase;
-  word-wrap: break-word;
   line-height: 1;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.red-text {
-  color: var(--red);
-  top: 5.1vh;
-  left: 35.5vh;
-  font-size: 3.5vh;
-  transform: translate(-50%, -50%);
-  z-index: 4;
+.tab-front svg {
+  height: 8vh;
+  width: auto;
 }
 
-.white-text {
-  color: var(--white);
-  top: 5.1vh;
-  left: 93.5vh;
-  font-size: 3.5vh;
-  transform: translate(-50%, -50%);
-  z-index: 4;
+/* A falon a fejléc felhúzva vár, rámutatásra lecsúszik (egyben, mindhárom fül) */
+body.is-wall .site-nav {
+  transform: translateY(-11.5vh);
 }
 
-.decor-box {
+body.is-wall .site-nav:hover,
+body.is-wall .site-nav:focus-within {
+  transform: none;
+}
+
+/* ---------- Spotify lejátszó, jobb felső sarok ---------- */
+
+.player {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 45;
+  width: min(340px, calc(100vw - 32px));
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.player iframe {
+  display: block;
+  border: 0;
+}
+
+/* keskenyebb ablakban a fejléc elérné, ott lent a helye */
+@media (max-aspect-ratio: 3/2) {
+  .player {
+    top: auto;
+    bottom: 16px;
+  }
+}
+
+/* ---------- A fal ---------- */
+
+#wall {
+  background: var(--black);
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+.wall-stage {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  vertical-align: top;
+}
+
+.wall-base {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.figure {
   position: absolute;
-  width: 331px;
-  height: 330px;
-  z-index: 3;
-  transition: transform 0.3s ease-in-out;
-  transform: translateY(-11.5vh); /* initially move up */
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.decor-box:hover {
-  transform: translateY(0vh);
+.hit-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hit {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 20;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+/* A kivágott ábra pontosan a fal ugyanazon pixelei fölött ül:
+   x, y, w a 15000 x 4271-es falkép pixeleiben (sablonillesztéssel mérve) */
+.cutout {
+  position: absolute;
+  left: calc(var(--x) / var(--wall-w) * 100%);
+  top: calc(var(--y) / var(--wall-h) * 100%);
+  width: calc(var(--w) / var(--wall-w) * 100%);
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* Alapból minden kattintható ábra kap egy fehér kontúrt és kék derengést,
+   így a kaotikus falon is látszik, mire lehet rámutatni */
+.cutout {
+  opacity: 1;
+  filter: drop-shadow(0 0 0.12vh rgba(255, 255, 255, 1))
+    drop-shadow(0 0 0.12vh rgba(255, 255, 255, 1))
+    drop-shadow(0 0 0.9vh rgba(1, 134, 229, 0.95));
+}
+
+body.figure-open .figure:not(.is-active) .cutout {
+  opacity: 0;
+}
+
+/* a fal többi része kissé sötétebb, a kattintható ábrák világosak maradnak */
+.wall-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+body.figure-open .figure.is-active .cutout {
+  filter: drop-shadow(0 0 1.2vh rgba(0, 0, 0, 0.55));
+}
+
+.figure-text {
+  display: none;
+}
+
+/* sötétítés + elmosás, amikor egy ábra ki van emelve */
+.wall-dim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+body.figure-open .wall-dim {
+  opacity: 1;
+}
+
+/* betöltéskor kétszer felvillan, hogy mi kattintható */
+body.hint-pulse .wall-dim {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: hint-pulse 3.6s ease-in-out 0.6s 1 both;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0; }
+  20%, 30% { opacity: 0.85; }
+  50% { opacity: 0; }
+  70%, 80% { opacity: 0.85; }
+}
+
+/* a szöveg mindig a képernyőn marad, a kurzorral ellentétes oldalon */
+.figure-panel {
+  position: fixed;
+  top: 50%;
+  z-index: 30;
+  width: min(36vw, 640px);
+  max-height: 76vh;
+  overflow-y: auto;
+  transform: translateY(-50%);
+  color: var(--white);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  scrollbar-width: none;
+}
+
+.figure-panel.is-left {
+  left: 5vw;
+}
+
+.figure-panel.is-right {
+  right: 5vw;
+}
+
+body.figure-open .figure-panel {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figure-panel h2 {
+  margin: 0 0 1.2em;
+  font-size: 2.8vh;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.figure-panel p {
+  margin: 0 0 1em;
+  font-size: 1.65vh;
+  line-height: 1.55;
+}
+
+.figure-panel a {
+  color: inherit;
+  word-break: break-all;
+}
+
+/* ---------- Idővonal ---------- */
+
+#timeline {
+  background: var(--red);
+  scrollbar-color: rgba(0, 0, 0, 0.45) transparent;
+}
+
+.tl-sizer {
+  position: relative;
+  height: 100%;
+}
+
+/* a terv 1074 px magas vásznon készült, ezt skálázzuk az ablak magasságára */
+.tl-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  background: var(--red);
+}
+
+.tl-canvas * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.tl-section {
+  position: absolute;
+  top: 280px;
+  color: var(--black);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+.tl-section h3 {
+  color: var(--white);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 36px;
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.tl-section p {
+  margin-top: 4em;
+}
+
+#block-mome-reorg {
+  left: 270px;
+  width: 386px;
+}
+
+#block-forum {
+  left: 756px;
+  width: 656px;
+}
+
+#block-taps {
+  left: 1512px;
+}
+
+#block-sorfal {
+  left: 2808px;
+}
+
+#block-matricak {
+  left: 4590px;
+}
+
+#block-forum-visual {
+  left: 6102px;
+}
+
+#block-taps,
+#block-sorfal {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 50px;
+}
+
+#block-matricak,
+#block-forum-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+}
+
+#block-taps .text-column p,
+#block-sorfal .text-column p {
+  width: 400px;
+}
+
+.image-column {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.image-column img {
+  display: block;
+  height: 260px;
+  width: auto;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.image-column img:hover {
+  filter: brightness(1.08);
+  transform: translateY(-4px);
+}
+
+#block-taps .image-column img,
+#block-sorfal .image-column img {
+  margin: 105px 0;
+}
+
+#block-matricak .image-column img,
+#block-forum-visual .image-column img {
+  margin: 12px 0;
+}
+
+/* nyolcszög-sor: egy fekete sáv köti össze őket, így nincs köztük piros rés */
+.tl-dots {
+  position: absolute;
+  top: 900px;
+  left: 0;
+  display: block;
+  overflow: visible;
+}
+
+/* ---------- Galéria (idővonal képei) ---------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.93);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+}
+
+.lb-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100vw - 200px);
+}
+
+.lb-img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 150px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity 0.2s ease;
+}
+
+.lb-img.is-loading {
+  opacity: 0.25;
+}
+
+.lb-caption {
+  display: flex;
+  gap: 3ch;
+  color: var(--white);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lb-count {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lb-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  background: var(--white);
+  color: var(--black);
+  clip-path: var(--octagon);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lb-btn:hover {
+  background: var(--red);
+  color: var(--white);
+}
+
+.lb-btn:focus-visible {
+  outline: none;
+  background: var(--blue);
+  color: var(--white);
+}
+
+.lb-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.lb-prev {
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-next {
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-close {
+  top: 24px;
+  right: 32px;
+}
+
+@media (max-width: 700px) {
+  .lb-figure {
+    max-width: calc(100vw - 24px);
+  }
+
+  .lb-prev,
+  .lb-next {
+    top: auto;
+    bottom: 20px;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.hint-pulse .wall-dim {
+    animation: none;
+  }
 }
