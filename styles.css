@@ -48,7 +48,6 @@ body.is-timeline {
   left: 20.3vh;
   z-index: 40;
   display: flex;
-  transition: transform 0.3s ease-in-out;
 }
 
 .tab {
@@ -61,7 +60,7 @@ body.is-timeline {
   margin-right: -1px;
   clip-path: polygon(0 0, 100% 0, 100% 49%, 70.7% 100%, 29.3% 100%, 0 49%);
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease-in-out;
 }
 
 .tab-fal {
@@ -103,24 +102,27 @@ body.is-timeline .tab-front {
   width: auto;
 }
 
-/* A falon a fejléc felhúzva vár, rámutatásra lecsúszik (egyben, mindhárom fül) */
-body.is-wall .site-nav {
+/* A falon a fülek felhúzva várnak, mindegyik külön csúszik le, ha rámutatsz */
+body.is-wall .tab {
   transform: translateY(-11.5vh);
 }
 
-body.is-wall .site-nav:hover,
-body.is-wall .site-nav:focus-within {
+body.is-wall .tab:hover,
+body.is-wall .tab:focus-visible {
   transform: none;
 }
 
 /* ---------- Spotify lejátszó, jobb felső sarok ---------- */
 
+/* A Spotify legkisebb (80 px magas) lejátszója. A borítót a Spotify nem engedi
+   kikapcsolni, ezért a bal szélét (--art) levágjuk. */
 .player {
+  --art: 74px;
   position: fixed;
   top: 16px;
   right: 16px;
   z-index: 45;
-  width: min(340px, calc(100vw - 32px));
+  width: min(250px, calc(100vw - 32px));
   height: 80px;
   border-radius: 12px;
   overflow: hidden;
@@ -130,6 +132,8 @@ body.is-wall .site-nav:focus-within {
 .player iframe {
   display: block;
   border: 0;
+  width: calc(100% + var(--art)) !important;
+  margin-left: calc(-1 * var(--art));
 }
 
 /* keskenyebb ablakban a fejléc elérné, ott lent a helye */
@@ -200,13 +204,13 @@ body.is-wall .site-nav:focus-within {
   transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
-/* Alapból minden kattintható ábra kap egy fehér kontúrt és kék derengést,
-   így a kaotikus falon is látszik, mire lehet rámutatni */
+/* Alapból minden kattintható ábra kap egy világosszürke kontúrt és egy sötét
+   derengést, így a kaotikus falon is látszik, mire lehet rámutatni */
 .cutout {
   opacity: 1;
-  filter: drop-shadow(0 0 0.12vh rgba(255, 255, 255, 1))
-    drop-shadow(0 0 0.12vh rgba(255, 255, 255, 1))
-    drop-shadow(0 0 0.9vh rgba(1, 134, 229, 0.95));
+  filter: drop-shadow(0 0 0.1vh rgba(225, 225, 225, 0.95))
+    drop-shadow(0 0 0.1vh rgba(225, 225, 225, 0.95))
+    drop-shadow(0 0 0.6vh rgba(0, 0, 0, 0.55));
 }
 
 body.figure-open .figure:not(.is-active) .cutout {
@@ -218,8 +222,53 @@ body.figure-open .figure:not(.is-active) .cutout {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.12);
   pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* előadás mód: se sötétítés, se kontúr, az egész fal egyben látszik */
+body.no-shade .wall-shade {
+  opacity: 0;
+}
+
+body.no-shade .cutout {
+  filter: none;
+}
+
+.shade-toggle {
+  position: fixed;
+  left: 12px;
+  bottom: 14px;
+  z-index: 35;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  clip-path: var(--octagon);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.shade-toggle:hover,
+.shade-toggle:focus-visible {
+  outline: none;
+  opacity: 1;
+  background: var(--red);
+}
+
+.shade-toggle svg {
+  width: 13px;
+  height: 13px;
+}
+
+body:not(.is-wall) .shade-toggle {
+  display: none;
 }
 
 body.figure-open .figure.is-active .cutout {
@@ -261,34 +310,31 @@ body.hint-pulse .wall-dim {
   70%, 80% { opacity: 0.85; }
 }
 
-/* a szöveg mindig a képernyőn marad, a kurzorral ellentétes oldalon */
+/* Kattintásra jelenik meg. A falon ül (együtt görög vele), az app.js az ábra
+   mellé teszi, oda, ahol az ábra egyik darabjába sem lóg bele. */
 .figure-panel {
-  position: fixed;
-  top: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
   z-index: 30;
-  width: min(36vw, 640px);
-  max-height: 76vh;
+  box-sizing: border-box;
+  width: 48vh;
   overflow-y: auto;
-  transform: translateY(-50%);
   color: var(--white);
   text-align: center;
+  text-shadow: 0 0.1vh 0.5vh rgba(0, 0, 0, 0.6);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
   scrollbar-width: none;
 }
 
-.figure-panel.is-left {
-  left: 5vw;
-}
-
-.figure-panel.is-right {
-  right: 5vw;
-}
-
-body.figure-open .figure-panel {
+body.figure-locked .figure-panel {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+  transition: opacity 0.3s ease;
 }
 
 .figure-panel h2 {
@@ -565,6 +611,70 @@ body.figure-open .figure-panel {
     bottom: 20px;
     transform: none;
   }
+}
+
+/* ---------- Betöltéskor: elinduljon a zene? ---------- */
+
+.music-ask {
+  --cut: 14px;
+  box-sizing: border-box;
+  max-width: calc(100vw - 32px);
+  padding: 28px 32px 30px;
+  border: 0;
+  background: var(--black);
+  color: var(--white);
+  font-family: inherit;
+  text-align: center;
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+
+.music-ask::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.music-ask p {
+  margin: 0 0 22px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.ask-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ask-btn {
+  --cut: 9px;
+  min-width: 108px;
+  padding: 12px 20px;
+  border: 0;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ask-yes {
+  background: var(--red);
+  color: var(--white);
+}
+
+.ask-no {
+  background: var(--white);
+  color: var(--black);
+}
+
+.ask-btn:hover,
+.ask-btn:focus-visible {
+  outline: none;
+  background: var(--blue);
+  color: var(--white);
 }
 
 @media (prefers-reduced-motion: reduce) {

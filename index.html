@@ -45,7 +45,7 @@
       </a>
     </nav>
 
-    <!-- Lejátszási lista: az első kattintásra elindul (a böngészők hangot csak kattintás után engednek) -->
+    <!-- Lejátszási lista: betöltéskor rákérdezünk, elinduljon-e (hangot a böngésző csak kattintás után enged) -->
     <div class="player">
       <div id="spotify-embed"></div>
     </div>
@@ -215,11 +215,10 @@
         </div>
 
         <div class="wall-dim"></div>
+        <!-- a kattintott ábra szövege: a falon ül, az app.js teszi az ábra mellé -->
+        <aside class="figure-panel" id="figure-panel" aria-live="polite"></aside>
       </div>
     </main>
-
-    <!-- az aktív ábra szövege: mindig a képernyőn, a kurzorral ellentétes oldalon -->
-    <aside class="figure-panel is-right" id="figure-panel" aria-live="polite"></aside>
 
     <!-- ===================== IDŐVONAL ===================== -->
     <main id="timeline" class="view" aria-label="Idővonal" hidden>
@@ -361,6 +360,22 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
       </button>
     </div>
+
+    <!-- Előadás mód: a sötétítés és a kontúrok ki-be kapcsolása -->
+    <button class="shade-toggle" id="shade-toggle" type="button" aria-pressed="true" aria-label="Kiemelés a falon" title="Kiemelés ki/be">
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M10 2.5a7.5 7.5 0 0 1 0 15z" fill="currentColor" />
+      </svg>
+    </button>
+
+    <dialog class="music-ask" id="music-ask" aria-labelledby="music-ask-title">
+      <p id="music-ask-title">Elindítsuk a zenét?</p>
+      <div class="ask-actions">
+        <button class="ask-btn ask-yes" type="button" data-answer="yes">Igen</button>
+        <button class="ask-btn ask-no" type="button" data-answer="no">Nem</button>
+      </div>
+    </dialog>
 
     <script src="app.js"></script>
     <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>

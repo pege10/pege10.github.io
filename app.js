@@ -88,6 +88,8 @@
       "wheel",
       (e) => {
         if (e.ctrlKey || lightboxOpen) return; // csípős nagyítás / nyitott galéria
+        // a hosszú ábraszöveg függőlegesen a saját dobozában görög
+        if (panel.contains(e.target) && panel.scrollHeight > panel.clientHeight) return;
         // a vízszintes trackpad-mozdulatot és a Shift+görgőt a böngésző intézi
         if (Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return;
         e.preventDefault();
@@ -105,35 +107,194 @@
 
   /* ---------------- A fal: ábrák kiemelése ---------------- */
 
+  // Rámutatásra az ábra kiemelődik, kattintásra megjelenik a szövege is.
+  // A szöveg a falon ül (együtt görög vele), és oda kerül, ahol az ábra
+  // egyik darabjába sem lóg bele: ehhez az ábra PNG-jének átlátszóságából
+  // készül egy durva rács (CELL x CELL falpixeles cellák).
+  const WALL_W = 15000;
+  const WALL_H = 4271;
+  const CELL = 16;
+  const GW = Math.ceil(WALL_W / CELL);
+  const GH = Math.ceil(WALL_H / CELL);
+
   const figures = Array.from(document.querySelectorAll(".figure"));
   const panel = document.getElementById("figure-panel");
+  const wallBase = wallView.querySelector(".wall-base");
+  const player = document.querySelector(".player");
+  const masks = new Map();
   let activeFigure = null;
   let locked = false;
+  let anchor = null; // a kattintás helye falpixelben, átméretezéskor kell
 
-  function openFigure(fig, clientX) {
+  function figureBox(fig) {
+    const img = fig.querySelector(".cutout");
+    const x = parseFloat(fig.style.getPropertyValue("--x"));
+    const y = parseFloat(fig.style.getPropertyValue("--y"));
+    const w = parseFloat(fig.style.getPropertyValue("--w"));
+    const ratio = img.naturalWidth ? img.naturalHeight / img.naturalWidth : img.height / img.width;
+    return { img, x, y, w, h: w * ratio };
+  }
+
+  function figureMask(fig) {
+    if (masks.has(fig)) return masks.get(fig);
+    const { img, x, y, w, h } = figureBox(fig);
+    const grid = new Uint8Array(GW * GH);
+    const c0 = Math.floor(x / CELL);
+    const r0 = Math.floor(y / CELL);
+    const cw = Math.min(GW, Math.ceil((x + w) / CELL)) - c0;
+    const rh = Math.min(GH, Math.ceil((y + h) / CELL)) - r0;
+    let fromAlpha = false;
+    if (img.complete && img.naturalWidth) {
+      try {
+        const cv = document.createElement("canvas");
+        cv.width = cw;
+        cv.height = rh;
+        const ctx = cv.getContext("2d", { willReadFrequently: true });
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, (x - c0 * CELL) / CELL, (y - r0 * CELL) / CELL, w / CELL, h / CELL);
+        const a = ctx.getImageData(0, 0, cw, rh).data;
+        for (let r = 0; r < rh; r++) {
+          for (let c = 0; c < cw; c++) {
+            if (a[(r * cw + c) * 4 + 3] > 8) grid[(r0 + r) * GW + c0 + c] = 1;
+          }
+        }
+        fromAlpha = true;
+      } catch (err) {
+        fromAlpha = false;
+      }
+    }
+    if (!fromAlpha) {
+      // ha a kép még nem töltött be: az egész befoglaló téglalap foglalt
+      for (let r = 0; r < rh; r++) grid.fill(1, (r0 + r) * GW + c0, (r0 + r) * GW + c0 + cw);
+      return grid;
+    }
+    masks.set(fig, grid);
+    return grid;
+  }
+
+  function block(grid, x0, y0, x1, y1) {
+    const c0 = Math.max(0, Math.floor(x0 / CELL));
+    const c1 = Math.min(GW, Math.ceil(x1 / CELL));
+    const r0 = Math.max(0, Math.floor(y0 / CELL));
+    const r1 = Math.min(GH, Math.ceil(y1 / CELL));
+    for (let r = r0; r < r1; r++) if (c1 > c0) grid.fill(1, r * GW + c0, r * GW + c1);
+  }
+
+  function placePanel(fig, scrollIntoView) {
+    const rect = wallBase.getBoundingClientRect();
+    const scale = rect.height / WALL_H; // képernyőpixel / falpixel
+    if (!scale) return;
+    const cellPx = CELL * scale;
+    const vh = wallView.clientHeight;
+    const vw = wallView.clientWidth;
+    const clickX = rect.left + anchor.x * scale;
+    const clickY = rect.top + anchor.y * scale;
+
+    // foglalt: az ábra minden darabja, a kattintás helye és a lejátszó
+    const grid = figureMask(fig).slice();
+    const pad = 30 / scale;
+    block(grid, anchor.x - pad, anchor.y - pad, anchor.x + pad, anchor.y + pad);
+    const pr = player.getBoundingClientRect();
+    block(grid, (pr.left - rect.left) / scale, (pr.top - rect.top) / scale,
+      (pr.right - rect.left) / scale, (pr.bottom - rect.top) / scale);
+
+    // összegzett tábla: egy téglalap foglaltsága egy lépésben
+    const W1 = GW + 1;
+    const sum = new Int32Array(W1 * (GH + 1));
+    for (let r = 0; r < GH; r++) {
+      let row = 0;
+      for (let c = 0; c < GW; c++) {
+        row += grid[r * GW + c];
+        sum[(r + 1) * W1 + c + 1] = sum[r * W1 + c + 1] + row;
+      }
+    }
+    const filled = (c0, r0, c1, r1) => {
+      c0 = Math.max(0, c0); r0 = Math.max(0, r0);
+      c1 = Math.min(GW, c1); r1 = Math.min(GH, r1);
+      if (c1 <= c0 || r1 <= r0) return 0;
+      return sum[r1 * W1 + c1] - sum[r0 * W1 + c1] - sum[r1 * W1 + c0] + sum[r0 * W1 + c0];
+    };
+
+    const gap = Math.max(1, Math.round(Math.max(14, vh * 0.02) / cellPx)); // hézag az ábrától
+    const topSafe = vh * 0.075; // a felhúzott fülek alatt
+    const bottomSafe = vh * 0.035;
+    const maxH = vh - topSafe - bottomSafe;
+    const rMin = Math.ceil((topSafe - rect.top) / cellPx);
+    const rLimit = Math.floor((vh - bottomSafe - rect.top) / cellPx);
+    const edge = 12;
+
+    let best = null;
+    // három szélesség: a középsőt szeretjük, de a keskeny/széles jobban befér a résekbe
+    [[48, 0], [36, 40], [64, 40]].forEach(([vhWidth, penalty]) => {
+      const widthPx = Math.min(vh * vhWidth / 100, vw - 2 * edge);
+      panel.style.width = `${widthPx}px`;
+      panel.style.maxHeight = `${maxH}px`;
+      const hPx = panel.offsetHeight;
+      const pw = Math.ceil(widthPx / cellPx);
+      const ph = Math.ceil(hPx / cellPx);
+      for (let r = rMin; r + ph <= rLimit; r++) {
+        const y0 = rect.top + r * cellPx;
+        const y1 = y0 + ph * cellPx;
+        const dy = clickY < y0 ? y0 - clickY : clickY > y1 ? clickY - y1 : 0;
+        const cy = (y0 + y1) / 2 - clickY;
+        for (let c = 0; c + pw <= GW; c++) {
+          const x0 = rect.left + c * cellPx;
+          const x1 = x0 + pw * cellPx;
+          const overlap = filled(c - gap, r - gap, c + pw + gap, r + ph + gap);
+          const outside = Math.max(0, edge - x0) + Math.max(0, x1 - (vw - edge));
+          const dx = clickX < x0 ? x0 - clickX : clickX > x1 ? clickX - x1 : 0;
+          const cx = (x0 + x1) / 2 - clickX;
+          const score = overlap * 1e6 + outside * 40 + Math.hypot(dx, dy) +
+            0.25 * Math.hypot(cx, cy) + penalty;
+          if (!best || score < best.score) best = { score, c, r, widthPx, x0, x1 };
+        }
+      }
+    });
+    if (!best) return;
+
+    panel.style.width = `${best.widthPx}px`;
+    panel.style.left = `${(best.c * CELL / WALL_W) * 100}%`;
+    panel.style.top = `${(best.r * CELL / WALL_H) * 100}%`;
+
+    // ha a legjobb hely kilóg a képernyőről, odagörgetünk
+    if (scrollIntoView) {
+      if (best.x1 > vw - edge) smoothScrollTo(wallView, wallView.scrollLeft + best.x1 - (vw - edge));
+      else if (best.x0 < edge) smoothScrollTo(wallView, wallView.scrollLeft - (edge - best.x0));
+    }
+  }
+
+  function highlight(fig) {
     if (activeFigure && activeFigure !== fig) activeFigure.classList.remove("is-active");
     activeFigure = fig;
     fig.classList.add("is-active");
+    body.classList.add("figure-open");
+  }
+
+  function lockFigure(fig, clientX, clientY) {
+    highlight(fig);
+    locked = true;
+    const rect = wallBase.getBoundingClientRect();
+    const scale = rect.height / WALL_H;
+    anchor = { x: (clientX - rect.left) / scale, y: (clientY - rect.top) / scale };
     panel.innerHTML = fig.querySelector(".figure-text").innerHTML;
     panel.scrollTop = 0;
-    // a szöveg a kurzorral ellentétes oldalra kerül, így nem takarja az ábrát
-    const onRight = clientX < window.innerWidth / 2;
-    panel.classList.toggle("is-right", onRight);
-    panel.classList.toggle("is-left", !onRight);
-    body.classList.add("figure-open");
+    placePanel(fig, true);
+    body.classList.add("figure-locked");
   }
 
   function closeFigure() {
     if (activeFigure) activeFigure.classList.remove("is-active");
     activeFigure = null;
     locked = false;
-    body.classList.remove("figure-open");
+    anchor = null;
+    body.classList.remove("figure-open", "figure-locked");
   }
 
   figures.forEach((fig) => {
     const hit = fig.querySelector(".hit");
-    hit.addEventListener("mouseenter", (e) => {
-      if (!locked) openFigure(fig, e.clientX);
+    hit.addEventListener("mouseenter", () => {
+      if (!locked) highlight(fig);
     });
     hit.addEventListener("mouseleave", () => {
       if (!locked) closeFigure();
@@ -144,17 +305,31 @@
         closeFigure();
         return;
       }
-      openFigure(fig, e.clientX);
-      locked = true;
+      lockFigure(fig, e.clientX, e.clientY);
     });
+    // a maszk előre elkészül, amint a kép betöltött
+    const img = fig.querySelector(".cutout");
+    if (img.complete) figureMask(fig);
+    else img.addEventListener("load", () => figureMask(fig), { once: true });
   });
 
   document.addEventListener("click", (e) => {
     if (locked && !panel.contains(e.target)) closeFigure();
   });
 
-  // betöltéskor egy rövid jelzés, hogy mely ábrák kattinthatók
-  if (viewFromHash() === "wall") {
+  /* ---------------- Előadás mód: kiemelés ki/be ---------------- */
+
+  const shadeToggle = document.getElementById("shade-toggle");
+  shadeToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const off = body.classList.toggle("no-shade");
+    shadeToggle.setAttribute("aria-pressed", String(!off));
+    body.classList.remove("hint-pulse");
+  });
+
+  // egy rövid jelzés, hogy mely ábrák kattinthatók (a zene-kérdés után)
+  function hintPulse() {
+    if (current !== "wall" || body.classList.contains("no-shade")) return;
     body.classList.add("hint-pulse");
     setTimeout(() => body.classList.remove("hint-pulse"), 4600);
   }
@@ -221,7 +396,10 @@
   let resizeRaf = 0;
   window.addEventListener("resize", () => {
     cancelAnimationFrame(resizeRaf);
-    resizeRaf = requestAnimationFrame(layoutTimeline);
+    resizeRaf = requestAnimationFrame(() => {
+      layoutTimeline();
+      if (locked && activeFigure && anchor) placePanel(activeFigure, false);
+    });
   });
   canvas.querySelectorAll("img").forEach((img) => {
     if (!img.complete) img.addEventListener("load", layoutTimeline, { once: true });
@@ -316,6 +494,7 @@
   });
 
   document.addEventListener("keydown", (e) => {
+    if (musicAsk.open) return;
     if (lightboxOpen) {
       if (e.key === "Escape") closeLightbox();
       else if (e.key === "ArrowRight") showImage(lbIndex + 1);
@@ -337,9 +516,10 @@
 
   /* ---------------- Zene: Spotify lejátszási lista ---------------- */
 
-  // A böngészők hangot csak a látogató első kattintása után engednek,
-  // ezért a lista az első kattintásra / billentyűre indul, elejétől, sorban.
+  // Betöltéskor rákérdezünk. Hangot a böngésző csak kattintás után enged,
+  // ezért az "Igen" kattintása indítja a listát, az elejétől, sorban.
   const PLAYLIST = "spotify:playlist:5MuA7P10NREc6FB3ZtYOmB";
+  const musicAsk = document.getElementById("music-ask");
   let spotify = null;
   let musicStarted = false;
   let wantMusic = false;
@@ -365,11 +545,18 @@
     spotify.play();
   }
 
-  ["pointerdown", "keydown"].forEach((type) =>
-    window.addEventListener(type, startMusic, { once: true, capture: true })
-  );
+  musicAsk.querySelectorAll("[data-answer]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (btn.dataset.answer === "yes") startMusic();
+      musicAsk.close();
+    });
+  });
+  musicAsk.addEventListener("close", hintPulse);
 
   /* ---------------- Indulás ---------------- */
 
   showView(viewFromHash());
+  if (typeof musicAsk.showModal === "function") musicAsk.showModal();
+  else hintPulse();
 })();
