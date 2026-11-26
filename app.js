@@ -139,6 +139,25 @@
   const wallBase = wallView.querySelector(".wall-base");
   const player = document.querySelector(".player");
   const masks = new Map();
+  const wallStage = wallView.querySelector(".wall-stage");
+  let wallLoaded = false;
+  let pulseWaiting = false;
+
+  // a falkép betöltése után úszik be a kép és jelennek meg a kiemelt ábrák
+  function markWallLoaded() {
+    if (wallLoaded) return;
+    wallLoaded = true;
+    wallStage.classList.add("is-loaded");
+    if (pulseWaiting) {
+      pulseWaiting = false;
+      setTimeout(hintPulse, 700);
+    }
+  }
+  if (wallBase.complete && wallBase.naturalWidth) markWallLoaded();
+  else {
+    wallBase.addEventListener("load", markWallLoaded, { once: true });
+    wallBase.addEventListener("error", markWallLoaded, { once: true });
+  }
   let activeFigure = null;
   let locked = false;
   let anchor = null; // a kattintás helye falpixelben, átméretezéskor kell
@@ -347,6 +366,10 @@
   // egy rövid jelzés, hogy mely ábrák kattinthatók (a zene-kérdés után)
   function hintPulse() {
     if (current !== "wall" || body.classList.contains("no-shade")) return;
+    if (!wallLoaded) {
+      pulseWaiting = true;
+      return;
+    }
     body.classList.add("hint-pulse");
     setTimeout(() => body.classList.remove("hint-pulse"), 4600);
   }
@@ -442,7 +465,42 @@
   let lbIndex = 0;
   let lastFocus = null;
 
+  // Nagyítás: kattintásra a kép a valódi felbontásában (legalább 2x) látszik,
+  // az egér (vagy az ujj) helyzete szerint lehet benne mozogni.
+  let lbZoom = 1;
+
+  function panTo(clientX, clientY) {
+    const x = Math.min(100, Math.max(0, (clientX / window.innerWidth) * 100));
+    const y = Math.min(100, Math.max(0, (clientY / window.innerHeight) * 100));
+    lbImg.style.transformOrigin = `${x}% ${y}%`;
+  }
+
+  function zoomIn(clientX, clientY) {
+    const shown = lbImg.getBoundingClientRect().width || 1;
+    lbZoom = Math.min(6, Math.max(2, lbImg.naturalWidth / shown));
+    panTo(clientX, clientY);
+    lbImg.style.transform = `scale(${lbZoom})`;
+    lightbox.classList.add("is-zoomed");
+  }
+
+  function zoomOut() {
+    lbZoom = 1;
+    lbImg.style.transform = "";
+    lightbox.classList.remove("is-zoomed");
+  }
+
+  lightbox.addEventListener("mousemove", (e) => {
+    if (lbZoom > 1) panTo(e.clientX, e.clientY);
+  });
+  lightbox.addEventListener("touchmove", (e) => {
+    if (lbZoom > 1 && e.touches.length === 1) {
+      e.preventDefault();
+      panTo(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+
   function showImage(i) {
+    zoomOut();
     lbIndex = (i + gallery.length) % gallery.length;
     const item = gallery[lbIndex];
     lbImg.classList.add("is-loading");
@@ -471,6 +529,7 @@
   function closeLightbox() {
     if (!lightboxOpen) return;
     lightboxOpen = false;
+    zoomOut();
     lightbox.classList.remove("is-open");
     lightbox.hidden = true;
     lbImg.removeAttribute("src");
@@ -495,9 +554,12 @@
     e.stopPropagation();
     closeLightbox();
   });
-  // a sötét háttérre kattintva bezárul, a képre kattintva a következő jön
+  // a képre kattintva nagyít / kicsinyít, a sötét háttérre kattintva bezárul
   lightbox.addEventListener("click", (e) => {
-    if (e.target === lbImg) showImage(lbIndex + 1);
+    if (e.target === lbImg) {
+      if (lbZoom > 1) zoomOut();
+      else zoomIn(e.clientX, e.clientY);
+    } else if (lbZoom > 1) zoomOut();
     else closeLightbox();
   });
   lightbox.addEventListener("wheel", (e) => e.preventDefault(), { passive: false });
@@ -508,7 +570,7 @@
     touchX = e.touches[0].clientX;
   }, { passive: true });
   lightbox.addEventListener("touchend", (e) => {
-    if (touchX === null) return;
+    if (touchX === null || lbZoom > 1) return;
     const dx = e.changedTouches[0].clientX - touchX;
     touchX = null;
     if (Math.abs(dx) > 40) showImage(lbIndex + (dx < 0 ? 1 : -1));
@@ -517,7 +579,10 @@
   document.addEventListener("keydown", (e) => {
     if (musicAsk.open) return;
     if (lightboxOpen) {
-      if (e.key === "Escape") closeLightbox();
+      if (e.key === "Escape") {
+        if (lbZoom > 1) zoomOut();
+        else closeLightbox();
+      }
       else if (e.key === "ArrowRight") showImage(lbIndex + 1);
       else if (e.key === "ArrowLeft") showImage(lbIndex - 1);
       else if (e.key === "Tab") {
@@ -534,6 +599,23 @@
     const view = views[current];
     if (e.key === "ArrowRight") smoothScrollTo(view, view.scrollLeft + view.clientWidth * 0.4);
     if (e.key === "ArrowLeft") smoothScrollTo(view, view.scrollLeft - view.clientWidth * 0.4);
+  });
+
+  /* ---------------- Társadalmi szerződés (a fal közepén) ---------------- */
+
+  const CHARTER = "Társadalmi szerződés az egyetem polgárságával";
+  const charterGallery = [
+    { src: "images/docs/szerzodes_1.jpg", alt: `${CHARTER}, 1/3`, title: `${CHARTER} | 1/3, a szöveg (a nyomdai fájlból)` },
+    { src: "images/docs/szerzodes_2_fal.jpg", alt: `${CHARTER}, 2/3`, title: `${CHARTER} | 2/3, az aláírt lap a falon` },
+    { src: "images/docs/szerzodes_3_fal.jpg", alt: `${CHARTER}, 3/3`, title: `${CHARTER} | 3/3, az aláírt lap a falon` },
+    { src: "images/docs/szerzodes_fal.jpg", alt: `${CHARTER} a falon`, title: `${CHARTER} | a három lap a falon` },
+  ];
+  wallView.querySelectorAll(".wall-doc").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeFigure();
+      openLightbox(Number(btn.dataset.doc), charterGallery);
+    });
   });
 
   /* ---------------- Plakátfal ---------------- */
@@ -704,7 +786,7 @@
   const nav = document.querySelector(".site-nav");
   function fitPlayer() {
     const navRight = nav.getBoundingClientRect().right;
-    const playerLeft = window.innerWidth - 16 - player.offsetWidth;
+    const playerLeft = window.innerWidth - 12 - player.getBoundingClientRect().width;
     body.classList.toggle("player-low", navRight + 16 > playerLeft);
   }
 
