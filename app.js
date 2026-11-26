@@ -550,13 +550,20 @@
   const posterGallery = POSTERS.map((p) => ({
     src: p.full || p.src,
     alt: p.title || "Plakát",
-    title: `${formatDate(p.date)}${p.title ? " | " + p.title : ""}`,
+    title: `${posterDate(p)}${p.title ? " | " + p.title : ""}`,
   }));
   let postersBuilt = false;
 
   function formatDate(iso) {
     const [y, m, d] = iso.split("-");
     return `${y}. ${m}. ${d}.`;
+  }
+
+  // a Figmából jött plakátoknak nincs pontos dátuma: csak a hónap, "kb."-val
+  function posterDate(p) {
+    if (!p.approx) return formatDate(p.date);
+    const [y, m] = p.date.split("-");
+    return `${y}. ${m}. (kb.)`;
   }
 
   function seeded(str) {
@@ -614,12 +621,12 @@
       btn.type = "button";
       btn.className = "pw-poster" + (rnd() < 0.55 ? " is-taped" : " is-pasted");
       btn.style.cssText = `left:${x}vh;top:${y}vh;width:${w}vh;height:${h}vh;--rot:${rot}deg;`;
-      btn.setAttribute("aria-label", `${formatDate(p.date)} plakát${p.title ? ": " + p.title : ""}`);
+      btn.setAttribute("aria-label", `${posterDate(p)} plakát${p.title ? ": " + p.title : ""}`);
       btn.innerHTML =
         `<img src="${p.src}" alt="" width="${p.w}" height="${p.h}" loading="lazy" decoding="async" />` +
         `<span class="pw-tape pw-tape-l" style="--t:${rnd() * 16 - 8}deg"></span>` +
         `<span class="pw-tape pw-tape-r" style="--t:${rnd() * 16 - 8}deg"></span>` +
-        `<span class="pw-date">${formatDate(p.date)}</span>`;
+        `<span class="pw-date">${posterDate(p)}</span>`;
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         openLightbox(i, posterGallery);
