@@ -45,7 +45,7 @@ body.is-posters {
   display: none !important;
 }
 
-/* ---------- Fejléc: három nyolcszög-fül, mindkét nézetben ugyanaz ---------- */
+/* ---------- Fejléc: nyolcszög-fülek, minden nézetben ugyanott ---------- */
 
 .site-nav {
   position: fixed;
@@ -66,6 +66,11 @@ body.is-posters {
   clip-path: polygon(0 0, 100% 0, 100% 49%, 70.7% 100%, 29.3% 100%, 0 49%);
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.3s ease-in-out;
+}
+
+.tab-bevezeto {
+  background: var(--white);
+  color: var(--black);
 }
 
 .tab-fal {
@@ -126,104 +131,178 @@ body.is-posters .tab:focus-visible {
   transform: none;
 }
 
-/* ---------- Spotify lejátszó, jobb felső sarok ---------- */
+/* ---------- Zenelejátszó, jobb felső sarok ---------- */
 
-/* A Spotify legkisebb (80 px magas) lejátszója. A borítót a Spotify nem engedi
-   kikapcsolni, ezért a bal szélét (--art) levágjuk. */
+/* Saját kis lejátszó a site formanyelvén, valódi méretben. A Spotify
+   lejátszója (iFrame API) a képernyőn kívül szól, ezt vezéreljük; a címet
+   a Spotify oEmbed adja. */
 .player {
-  --art: 74px;
+  --cut: 8px;
   position: fixed;
   top: 12px;
   right: 12px;
   z-index: 45;
-  width: 190px;
-  height: 80px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
-  /* a Spotify 80 px-nél kisebb lejátszót nem ad, ezért egészében kicsinyítjük */
-  transform: scale(0.78);
-  transform-origin: 100% 0;
-}
-
-.player iframe {
-  display: block;
-  border: 0;
-  width: calc(100% + var(--art)) !important;
-  margin-left: calc(-1 * var(--art));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 236px;
+  height: 46px;
+  padding: 0 14px 0 7px;
+  background: var(--black);
+  color: var(--white);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
 }
 
 /* ha a fülek elérnék (az app.js méri), a lejátszó lecsúszik a jobb alsó sarokba */
 body.player-low .player {
   top: auto;
   bottom: 12px;
-  transform-origin: 100% 100%;
 }
 
-/* ---------- Kis gombok a bal alsó sarokban ---------- */
-
-.info-btn {
-  position: fixed;
-  left: 12px;
-  bottom: 14px;
-  z-index: 35;
+.player-btn {
+  flex: none;
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(0, 0, 0, 0.55);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: var(--red);
   color: var(--white);
   clip-path: var(--octagon);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
-.info-btn:hover,
-.info-btn:focus-visible {
+.player-btn:hover,
+.player-btn:focus-visible {
   outline: none;
-  opacity: 1;
   background: var(--blue);
 }
 
-body.is-intro .info-btn {
+.player-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.player .i-pause,
+.player.is-playing .i-play {
   display: none;
+}
+
+.player.is-playing .i-pause {
+  display: block;
+}
+
+.player-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.player-title {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.player-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.player-progress {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--red);
+}
+
+.player-link {
+  flex: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.player-link::after {
+  content: " \2197";
+}
+
+.player-link:hover,
+.player-link:focus-visible {
+  outline: none;
+  color: var(--white);
+}
+
+/* a valódi Spotify-lejátszó: szól, de nem látszik. A képernyőn belül kell
+   maradnia (a Spotify loading="lazy" kerete a képernyőn kívül be sem töltene),
+   ezért átlátszó, és minden mögött ül. */
+.spotify-hidden {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  width: 300px;
+  height: 80px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- Nyitóoldal ---------- */
 
+/* Vízszintesen görög, mint a többi nézet: elöl a cím és a videó, utána a
+   szöveg hasábokban (a hasábok számát az app.js méri). Minden méret az
+   ablak magasságához igazodik, mint a füleké. */
 #intro {
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
   background: var(--red);
   scrollbar-color: rgba(0, 0, 0, 0.45) transparent;
 }
 
-.intro-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 68ch) minmax(300px, 1fr);
-  grid-template-areas:
-    "hero hero"
-    "texts side";
-  column-gap: clamp(32px, 5vw, 96px);
+.intro-track {
+  --video-h: 40vh;
+  display: flex;
+  align-items: flex-start;
+  gap: 9vh;
   box-sizing: border-box;
-  max-width: 1500px;
-  padding: calc(17vh + 5vh) clamp(20px, 6vw, 110px) 12vh 20.3vh;
+  width: max-content;
+  height: 100%;
+  padding: 22vh 14vh 7vh 20.3vh;
   color: var(--black);
 }
 
 .intro-hero {
-  grid-area: hero;
-  margin-bottom: 6vh;
+  flex: none;
+  width: calc(var(--video-h) * 16 / 9);
+}
+
+.intro-hero header {
+  margin-bottom: 3.6vh;
 }
 
 .intro-kicker {
   margin: 0 0 1.2vh;
-  font-size: 14px;
+  font-size: clamp(11px, 1.4vh, 20px);
   font-weight: 700;
   letter-spacing: 0.18em;
 }
@@ -231,7 +310,7 @@ body.is-intro .info-btn {
 .intro-hero h1 {
   margin: 0;
   color: var(--white);
-  font-size: clamp(64px, 13vh, 150px);
+  font-size: 13vh;
   font-weight: 700;
   line-height: 0.9;
   text-transform: uppercase;
@@ -240,48 +319,85 @@ body.is-intro .info-btn {
 .intro-sub {
   margin: 1.6vh 0 0;
   color: var(--white);
-  font-size: clamp(18px, 3vh, 30px);
+  font-size: 3vh;
   font-weight: 700;
   line-height: 1.2;
   text-transform: uppercase;
-}
-
-.intro-side {
-  grid-area: side;
-  align-self: start;
-  position: sticky;
-  top: 4vh;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
 }
 
 .intro-video {
   margin: 0;
 }
 
-.intro-video video {
+/* a videó sarkai levágva, mint a site többi doboza */
+.video-frame {
+  --cut: 2.4vh;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--black);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+
+.video-frame video {
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+  object-fit: cover;
   background: var(--black);
 }
 
+/* amíg nem indult el: piros nyolcszög lejátszógomb a borítón */
+.video-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 11vh;
+  height: 11vh;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: var(--red);
+  color: var(--white);
+  clip-path: var(--octagon);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.video-play:hover,
+.video-play:focus-visible {
+  outline: none;
+  background: var(--blue);
+}
+
+.video-play svg {
+  width: 4.6vh;
+  height: 4.6vh;
+  margin-left: 0.5vh;
+}
+
+.intro-video.is-started .video-play {
+  display: none;
+}
+
 .intro-video figcaption {
-  margin-top: 8px;
-  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2vh;
+  margin-top: 1.8vh;
+  font-size: clamp(11px, 1.4vh, 20px);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .intro-enter {
-  --cut: 10px;
-  align-self: flex-start;
-  padding: 16px 26px;
+  --cut: 1vh;
+  flex: none;
+  padding: 1.5vh 2.6vh;
   background: var(--black);
   color: var(--white);
-  font-size: 16px;
+  font-size: clamp(12px, 1.6vh, 22px);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-decoration: none;
@@ -300,10 +416,17 @@ body.is-intro .info-btn {
   background: var(--blue);
 }
 
+/* a két szöveg hasábokban fut tovább jobbra */
 .intro-texts {
-  grid-area: texts;
-  font-size: 16px;
-  line-height: 1.65;
+  flex: none;
+  box-sizing: border-box;
+  width: 50vh;
+  height: 100%;
+  column-width: 50vh;
+  column-gap: 7vh;
+  column-fill: auto;
+  font-size: clamp(13px, 1.7vh, 22px);
+  line-height: 1.6;
 }
 
 .intro-texts p {
@@ -313,21 +436,23 @@ body.is-intro .info-btn {
 .intro-texts h2 {
   margin: 0 0 0.6em;
   color: var(--white);
-  font-size: 28px;
+  font-size: 3.2vh;
   font-weight: 700;
   line-height: 1.1;
   text-transform: uppercase;
+  break-after: avoid;
 }
 
 .intro-credits {
-  margin-top: 3em;
-  padding-top: 1.6em;
+  margin-top: 2.4em;
+  padding-top: 1.4em;
   border-top: 2px solid var(--black);
+  break-inside: avoid;
 }
 
 .intro-credits h2 {
   color: var(--black);
-  font-size: 14px;
+  font-size: 0.9em;
   letter-spacing: 0.06em;
 }
 
@@ -354,8 +479,9 @@ body.is-intro .info-btn {
   margin: 0;
 }
 
+/* az esszé új hasábban kezdődik */
 .intro-essay {
-  margin-top: 10vh;
+  break-before: column;
 }
 
 .intro-byline {
@@ -364,20 +490,21 @@ body.is-intro .info-btn {
   text-transform: uppercase;
 }
 
-@media (max-width: 900px) {
-  .intro-inner {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "hero"
-      "side"
-      "texts";
-    padding-left: clamp(16px, 5vw, 40px);
-    padding-right: clamp(16px, 5vw, 40px);
+@media (max-width: 700px) {
+  .intro-track {
+    gap: 40px;
+    padding-left: 16px;
+    padding-right: 24px;
   }
 
-  .intro-side {
-    position: static;
-    margin-bottom: 6vh;
+  .intro-hero {
+    width: min(calc(var(--video-h) * 16 / 9), calc(100vw - 32px));
+  }
+
+  .intro-texts {
+    width: min(50vh, calc(100vw - 48px));
+    column-width: min(50vh, calc(100vw - 48px));
+    column-gap: 40px;
   }
 }
 
@@ -388,24 +515,14 @@ body.is-intro .info-btn {
   scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 
-/* Amíg a falkép tölt, egy apró (96 px-es) változata látszik felnagyítva,
-   így nem fekete a képernyő. A kép a böngésző méretéhez illő változatban jön
-   (srcset), betöltés után beúszik, utána jelennek meg a kiemelt ábrák. */
+/* Amíg a falkép tölt (és dekódolódik), piros töltőképernyő takarja;
+   utána az elhalványul, és megjelennek a kiemelt ábrák. */
 .wall-stage {
   position: relative;
   display: inline-block;
   height: 100%;
   vertical-align: top;
-  background: #d4cfc7 url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCAAbAGADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDs43Kg7R2yBWTLquvGFM6bCrMrFh5hwpHQZ98/z9KlOoI6Hy3CjoNwwc1EbiQDDZfcR+73ZLDFF7lKPK9UWLLUtUliZZ4I43XjGDj7vPJPPNI17qS3R3S2vlFR5aAfMW5zk59QMfWpTGPL3NGSzLyoI+nPrUcEWD+8RMKTgVnzs3VKKRpGe4W2YpNGJd2RuTqufQHuKgTUZ0Z3nVTG7qsaBDlPUk9Dz9KrmYLKZNjEDhdrdak82NPvs3zP9wfxGnzroSoPeS0LUt3HLHu3BMYQ7+Bk9qalyViKErhR8oz29arLJCCropTOCoHf86q3Lr57GMYbIJIJGMfSi76jsr6Ggsv2i6VsIwQ8MrVqecMYJH4muRL3K6iirCPszKS8m8Hk54/WrcbwNhUjKlQCGI3f19aOew3S5up0qODkgg/SpAwxWIs/lOwjWfBAyV6fgKe980UyRmYAs3AkYc/TimpGTh2OQtraVB5bQylhJk9FAGeDznPfNbtsq+XjI3AYHH3anjjQsVI4JOab5SJEwQFfnPRj9KT2saRu5X6sbHIpufLwcLzxxu4qKESKXR1yB90gnBH+c1deztxJgR4BXdwT155pl7GkOmO8Q2sqZBHUVCTNnKLsu9itvyGd2X5T8vPI9ab5gKlhzlQAQPmHFLHDHLZwSSLuf72Se+KgmXa7upIZY8ggmqSsZvV2FeckeTHtIA2lmHJH0pokDklCmN2HAPGP8ayruSRruIGR8GMZ+Y/X+lULMbbospYEuCcMf7wqXI0VLY6tIghzjt1zkVH5CzsqruXYSeHIGffH1/Sl1YCGBfKyu8HOD9KpeHpHu9SliuDvTYRjp3z2qW9bFwg3B1E9jRRljbCseTnLAjP6VTuYxqDSLCJIZo22+Yye9akVtElwIlUhFZgBuPTAqSSKNOFXAzmqUbmTq8r03P/Z") center / 100% 100% no-repeat;
-}
-
-.wall-stage .wall-base {
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.wall-stage.is-loaded .wall-base {
-  opacity: 1;
+  background: #d4cfc7;
 }
 
 .wall-stage .figure,
@@ -419,31 +536,70 @@ body.is-intro .info-btn {
   pointer-events: none;
 }
 
+/* töltőképernyő: piros, rajta az idővonal nyolcszög-sora, ez telik meg sorban */
 .wall-loading {
-  position: absolute;
-  left: 50vw;
-  top: 50%;
-  z-index: 3;
-  padding: 0.8vh 1.6vh;
-  background: rgba(0, 0, 0, 0.55);
-  color: var(--white);
-  font-size: 1.5vh;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: opacity 0.4s ease;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3.2vh;
+  background: var(--red);
+  color: var(--black);
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
 }
 
 .wall-stage.is-loaded .wall-loading {
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-dots {
+  position: relative;
+  display: flex;
+}
+
+/* a fekete sáv a nyolcszögek között, mint az idővonalon */
+.loader-dots::before {
+  content: "";
+  position: absolute;
+  left: 2vh;
+  right: 2vh;
+  top: 30.2%;
+  bottom: 30.2%;
+  background: var(--black);
+}
+
+.loader-dots i {
+  position: relative;
+  width: 5.4vh;
+  height: 5.4vh;
+  background: var(--black);
+  clip-path: var(--octagon);
+  transition: background-color 0.25s ease;
+}
+
+/* ahogy halad a letöltés, sorban fehérre telnek */
+.loader-dots i.is-full {
+  background: var(--white);
+}
+
+.loader-label {
+  margin: 0;
+  font-size: max(12px, 1.8vh);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .wall-base {
   display: block;
   height: 100%;
   width: auto;
+  aspect-ratio: 15000 / 4271;
   max-width: none;
   user-select: none;
   -webkit-user-drag: none;

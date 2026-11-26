@@ -18,6 +18,9 @@
   <body class="is-intro">
     <!-- Fejléc: ugyanaz a három fül mindkét nézetben -->
     <nav class="site-nav" aria-label="Menü">
+      <a class="tab tab-bevezeto" href="#bevezeto" data-view="intro">
+        <span class="tab-label">bevezető</span>
+      </a>
       <a class="tab tab-fal" href="#fal" data-view="wall">
         <span class="tab-label">A fal</span>
       </a>
@@ -48,29 +51,50 @@
       </a>
     </nav>
 
-    <!-- Lejátszási lista: betöltéskor rákérdezünk, elinduljon-e (hangot a böngésző csak kattintás után enged) -->
-    <div class="player">
+    <!-- Lejátszási lista: saját kis lejátszó, a Spotify-lejátszó láthatatlanul szól mögötte.
+         Betöltéskor rákérdezünk, elinduljon-e (hangot a böngésző csak kattintás után enged). -->
+    <div class="player" id="player">
+      <button class="player-btn" id="player-btn" type="button" aria-label="Zene indítása">
+        <svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 2.2v7.6L10 6z" fill="currentColor" /></svg>
+        <svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.8 2.2h2.3v7.6H2.8zM6.9 2.2h2.3v7.6H6.9z" fill="currentColor" /></svg>
+      </button>
+      <div class="player-info">
+        <span class="player-title" id="player-title">MOME Fal | zene</span>
+        <span class="player-row">
+          <span class="player-bar"><span class="player-progress" id="player-progress"></span></span>
+          <a class="player-link" href="https://open.spotify.com/playlist/5MuA7P10NREc6FB3ZtYOmB" target="_blank" rel="noopener" title="A lista megnyitása a Spotifyban">Spotify</a>
+        </span>
+      </div>
+    </div>
+    <div class="spotify-hidden" aria-hidden="true" inert>
       <div id="spotify-embed"></div>
     </div>
 
-    <!-- ===================== NYITÓOLDAL ===================== -->
+    <!-- ===================== NYITÓOLDAL (vízszintesen görög, mint a többi) ===================== -->
     <main id="intro" class="view" aria-label="Bevezető" hidden>
-      <div class="intro-inner">
-        <header class="intro-hero">
-          <p class="intro-kicker">FRONTOPEDIA</p>
-          <h1>A Fal</h1>
-          <p class="intro-sub">Egy digitális emlékezethely létrejötte</p>
-        </header>
+      <div class="intro-track">
+        <section class="intro-hero">
+          <header>
+            <p class="intro-kicker">FRONTOPEDIA</p>
+            <h1>A Fal</h1>
+            <p class="intro-sub">Egy digitális emlékezethely létrejötte</p>
+          </header>
 
-        <aside class="intro-side">
           <figure class="intro-video">
-            <video controls preload="none" playsinline poster="video/mome-fal-event.jpg">
-              <source src="video/mome-fal-event.mp4" type="video/mp4" />
-            </video>
-            <figcaption>MOME Fal event | 7:06</figcaption>
+            <div class="video-frame">
+              <video preload="none" playsinline poster="video/mome-fal-event.jpg">
+                <source src="video/mome-fal-event.mp4" type="video/mp4" />
+              </video>
+              <button class="video-play" type="button" aria-label="A videó lejátszása">
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 2.2v7.6L10 6z" fill="currentColor" /></svg>
+              </button>
+            </div>
+            <figcaption>
+              <span>MOME Fal event | 7:06</span>
+              <a class="intro-enter" href="#fal">Tovább a falra</a>
+            </figcaption>
           </figure>
-          <a class="intro-enter" href="#fal">Tovább a falra</a>
-        </aside>
+        </section>
 
         <div class="intro-texts">
           <article class="intro-article">
@@ -199,9 +223,13 @@
     <!-- ===================== A FAL ===================== -->
     <main id="wall" class="view" aria-label="A fal">
       <div class="wall-stage">
-        <img class="wall-base" src="images/fal_5000.jpg" srcset="images/fal_2500.jpg 2500w, images/fal_5000.jpg 5000w, images/fal_8000.jpg 8000w, images/fal.jpg 15000w" sizes="352vh" width="15000" height="4271" alt="A MOME fala" fetchpriority="high" decoding="async" />
+        <!-- a képet az app.js tölti be (images/fal_2500|5000|8000.jpg), hogy a töltőképernyő mutathassa, hol tart -->
+        <img class="wall-base" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="15000" height="4271" alt="A MOME fala" />
         <div class="wall-shade"></div>
-        <div class="wall-loading" aria-hidden="true">A fal betöltése…</div>
+        <div class="wall-loading" role="status">
+          <div class="loader-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p class="loader-label">A fal betöltése</p>
+        </div>
 
         <div class="figure" style="--x: 8178; --y: 1585; --w: 746">
           <svg class="hit-layer" viewBox="0 0 15000 4271" preserveAspectRatio="none" aria-hidden="true">
@@ -517,9 +545,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
       </button>
     </div>
-
-    <!-- vissza a nyitóoldalra -->
-    <a class="info-btn" href="#bevezeto" aria-label="A projektről" title="A projektről">i</a>
 
     <!-- Előadás mód: a sötétítés és a kontúrok ki-be kapcsolása -->
     <button class="shade-toggle" id="shade-toggle" type="button" aria-pressed="true" aria-label="Kiemelés a falon" title="Kiemelés ki/be">

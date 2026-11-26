@@ -26,12 +26,9 @@
     return hashes[location.hash] || "intro";
   }
 
-  // a nyitóoldal függőlegesen görög, a többi vízszintesen
-  const scrollPos = (name) => (name === "intro" ? "scrollTop" : "scrollLeft");
-
   function showView(name) {
     if (name === current) return;
-    if (current) savedScroll[current] = views[current][scrollPos(current)];
+    if (current) savedScroll[current] = views[current].scrollLeft;
     closeFigure();
     closeLightbox();
     if (current === "intro") pauseVideo();
@@ -43,9 +40,10 @@
     document.title = titles[name];
     current = name;
 
+    if (name === "intro") layoutIntro();
     if (name === "timeline") layoutTimeline();
     if (name === "posters") layoutPosters();
-    views[name][scrollPos(name)] = savedScroll[name];
+    views[name].scrollLeft = savedScroll[name];
     fitPlayer();
     if (name === "wall" && !wallSeen && !musicAsk.open) {
       wallSeen = true;
@@ -60,7 +58,7 @@
     tab.addEventListener("click", (e) => {
       if (tab.dataset.view === current) {
         e.preventDefault();
-        if (current !== "intro") smoothScrollTo(views[current], 0);
+        smoothScrollTo(views[current], 0);
       }
       tab.blur();
     });
@@ -118,6 +116,7 @@
     );
   }
 
+  enableWheel(introView, 3);
   enableWheel(wallView, 3);
   enableWheel(timelineView, 3);
   enableWheel(postersView, 3);
@@ -143,7 +142,20 @@
   let wallLoaded = false;
   let pulseWaiting = false;
 
-  // a falkép betöltése után úszik be a kép és jelennek meg a kiemelt ábrák
+  // Amíg a falkép tölt, a piros töltőképernyő látszik. A képet mi töltjük le
+  // (fetch), így tudjuk, hol tart: a nyolcszögek ehhez igazodva, sorban telnek
+  // meg fehérrel. A kép dekódolása után a képernyő elhalványul, és megjelennek
+  // a kiemelt ábrák.
+  const loaderDots = Array.from(wallView.querySelectorAll(".loader-dots i"));
+  const WALL_SIZES = [2500, 5000, 8000]; // images/fal_<szélesség>.jpg
+
+  // a letöltés az utolsó előttiig tölti a sort, az utolsó a dekódoláskor telik meg
+  function showProgress(p, decoded = false) {
+    const steps = loaderDots.length - (decoded ? 0 : 1);
+    const n = decoded ? loaderDots.length : Math.min(steps, Math.floor(p * steps + 1e-6));
+    loaderDots.forEach((d, i) => d.classList.toggle("is-full", i < n));
+  }
+
   function markWallLoaded() {
     if (wallLoaded) return;
     wallLoaded = true;
@@ -153,11 +165,57 @@
       setTimeout(hintPulse, 700);
     }
   }
-  if (wallBase.complete && wallBase.naturalWidth) markWallLoaded();
-  else {
-    wallBase.addEventListener("load", markWallLoaded, { once: true });
-    wallBase.addEventListener("error", markWallLoaded, { once: true });
+
+  // a fal kb. 352 vh széles: az ehhez (és a kijelző sűrűségéhez) elég kép;
+  // retinán is legfeljebb 1,5-szörös, hogy gyorsan betöltsön
+  function wallSource() {
+    const need = window.innerHeight * 3.52 * Math.min(window.devicePixelRatio || 1, 1.5);
+    const w = WALL_SIZES.find((size) => size >= need) || WALL_SIZES[WALL_SIZES.length - 1];
+    return `images/fal_${w}.jpg`;
   }
+
+  async function loadWall() {
+    const url = wallSource();
+    let guess = 0; // ha a szerver nem mondja meg a méretet: lassan, becsülve telik
+    let guessTimer = 0;
+    try {
+      const res = await fetch(url);
+      if (!res.ok || !res.body) throw new Error(String(res.status));
+      const total = Number(res.headers.get("Content-Length")) || 0;
+      if (!total) {
+        guessTimer = setInterval(() => {
+          guess = Math.min(guess + 1, loaderDots.length - 2);
+          showProgress(guess / (loaderDots.length - 1));
+        }, 500);
+      }
+      const reader = res.body.getReader();
+      const chunks = [];
+      let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        got += value.length;
+        if (total) showProgress(got / total);
+      }
+      wallBase.src = URL.createObjectURL(new Blob(chunks, { type: "image/jpeg" }));
+    } catch (err) {
+      wallBase.src = url; // tartalék: a böngésző tölti be a szokásos módon
+    }
+    clearInterval(guessTimer);
+    showProgress(1);
+    try {
+      await wallBase.decode();
+    } catch (err) {
+      /* a kép akkor is megjelenik, ha a dekódolás itt nem sikerült */
+    }
+    showProgress(1, true);
+    // az utolsó nyolcszög megtelését még látni lehessen
+    setTimeout(markWallLoaded, current === "wall" ? 450 : 0);
+  }
+
+  loadWall();
+
   let activeFigure = null;
   let locked = false;
   let anchor = null; // a kattintás helye falpixelben, átméretezéskor kell
@@ -437,6 +495,7 @@
   window.addEventListener("resize", () => {
     cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => {
+      layoutIntro();
       layoutTimeline();
       layoutPosters();
       fitPlayer();
@@ -720,36 +779,127 @@
     posterWall.style.width = `${Math.max(rowX[0], rowX[1]) + 24}vh`;
   }
 
+  /* ---------------- Nyitóoldal: hasábok ---------------- */
+
+  // A szöveg hasábokban fut jobbra. A doboz szélességét a tényleges tördeléshez
+  // igazítjuk, különben a túlcsorduló hasábok nem számítanának a görgetésbe.
+  const introTexts = introView.querySelector(".intro-texts");
+
+  function layoutIntro() {
+    if (introView.hidden) return;
+    const cs = getComputedStyle(introTexts);
+    const colW = parseFloat(cs.columnWidth);
+    const gap = parseFloat(cs.columnGap) || 0;
+    if (!colW) return;
+    introTexts.style.columnCount = "";
+    introTexts.style.width = `${colW}px`;
+    const left = introTexts.getBoundingClientRect().left;
+    let right = left + colW;
+    introTexts.querySelectorAll("p, h2, dl").forEach((el) => {
+      for (const r of el.getClientRects()) right = Math.max(right, r.right);
+    });
+    const n = Math.max(1, Math.round((right - left + gap) / (colW + gap)));
+    introTexts.style.columnCount = String(n);
+    introTexts.style.width = `${n * colW + (n - 1) * gap}px`;
+  }
+
+  // a webfont betöltése után újratördelünk (más a betűszélesség)
+  if (document.fonts) document.fonts.ready.then(layoutIntro);
+
   /* ---------------- Zene: Spotify lejátszási lista ---------------- */
 
+  // Saját kis lejátszó; a Spotify lejátszója a képernyőn kívül szól, ezt vezéreljük.
   // Betöltéskor rákérdezünk. Hangot a böngésző csak kattintás után enged,
-  // ezért az "Igen" kattintása indítja a listát, az elejétől, sorban.
+  // ezért az "Igen" (vagy a lejátszógomb) kattintása indítja a listát.
   const PLAYLIST = "spotify:playlist:5MuA7P10NREc6FB3ZtYOmB";
   const musicAsk = document.getElementById("music-ask");
+  const playerBtn = document.getElementById("player-btn");
+  const playerTitle = document.getElementById("player-title");
+  const playerProgress = document.getElementById("player-progress");
+  const titleCache = new Map();
   let spotify = null;
-  let musicStarted = false;
+  let everPlayed = false;
+  let playing = false;
   let wantMusic = false;
+  let shownURI = "";
+
+  function setTitle(text) {
+    playerTitle.textContent = text;
+    playerTitle.title = text;
+  }
+
+  // a lejátszó csak a szám azonosítóját adja, a címet a Spotify oEmbed
+  function showTitle(uri) {
+    if (!uri || uri === shownURI) return;
+    shownURI = uri;
+    if (titleCache.has(uri)) {
+      setTitle(titleCache.get(uri));
+      return;
+    }
+    const [, type, id] = uri.split(":");
+    if (!type || !id) return;
+    const url = `https://open.spotify.com/${type}/${id}`;
+    fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((j) => {
+        if (!j || !j.title) return;
+        titleCache.set(uri, j.title);
+        if (shownURI === uri) setTitle(j.title);
+      })
+      .catch(() => {});
+  }
+
+  function setPlaying(on) {
+    if (on === playing) return;
+    playing = on;
+    player.classList.toggle("is-playing", on);
+    playerBtn.setAttribute("aria-label", on ? "Zene szüneteltetése" : "Zene indítása");
+  }
 
   window.onSpotifyIframeApiReady = (IFrameAPI) => {
     const el = document.getElementById("spotify-embed");
-    IFrameAPI.createController(el, { uri: PLAYLIST, width: "100%", height: 80 }, (controller) => {
+    IFrameAPI.createController(el, { uri: PLAYLIST, width: 300, height: 80 }, (controller) => {
       spotify = controller;
+      // a keret nem látszik, ezért ne várjon a "lusta" betöltéssel
+      const frame = document.querySelector(".spotify-hidden iframe");
+      if (frame) frame.loading = "eager";
       controller.addListener("playback_update", (e) => {
-        if (e.data && e.data.isPaused === false) musicStarted = true;
+        const d = e.data || {};
+        setPlaying(d.isPaused === false);
+        if (d.duration > 0) {
+          playerProgress.style.width = `${Math.min(100, (100 * d.position) / d.duration)}%`;
+        }
+        showTitle(d.playingURI);
       });
       if (wantMusic) startMusic();
     });
   };
 
+  showTitle(PLAYLIST); // amíg nem szól: a lista neve
+
   function startMusic() {
-    if (musicStarted) return;
     if (!spotify) {
       wantMusic = true;
       return;
     }
-    musicStarted = true;
-    spotify.play();
+    wantMusic = false;
+    if (!everPlayed) {
+      everPlayed = true;
+      spotify.play(); // a lista elejétől
+    } else {
+      spotify.resume();
+    }
   }
+
+  function stopMusic() {
+    wantMusic = false;
+    if (spotify && playing) spotify.pause();
+  }
+
+  playerBtn.addEventListener("click", () => {
+    if (playing) stopMusic();
+    else startMusic();
+  });
 
   musicAsk.querySelectorAll("[data-answer]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -767,13 +917,24 @@
 
   /* ---------------- Videó a nyitóoldalon ---------------- */
 
+  // A borítón a site saját lejátszógombja; elindítás után a böngésző vezérlői jönnek.
   const introVideo = introView.querySelector("video");
+  const introFigure = introView.querySelector(".intro-video");
+
+  function videoStarted() {
+    introFigure.classList.add("is-started");
+    introVideo.controls = true;
+  }
+
+  introView.querySelector(".video-play").addEventListener("click", () => {
+    videoStarted();
+    introVideo.play();
+  });
+
   // ha elindul a videó, a zene megáll, hogy ne szóljon a kettő egyszerre
   introVideo.addEventListener("play", () => {
-    if (spotify && musicStarted) {
-      spotify.pause();
-      musicStarted = false;
-    }
+    videoStarted();
+    stopMusic();
   });
 
   function pauseVideo() {
