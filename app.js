@@ -3,38 +3,54 @@
   "use strict";
 
   const body = document.body;
+  const introView = document.getElementById("intro");
   const wallView = document.getElementById("wall");
   const timelineView = document.getElementById("timeline");
-  const views = { wall: wallView, timeline: timelineView };
+  const postersView = document.getElementById("posters");
+  const views = { intro: introView, wall: wallView, timeline: timelineView, posters: postersView };
   const titles = {
+    intro: "FRONTOPEDIA",
     wall: "FRONTOPEDIA - A fal",
     timeline: "FRONTOPEDIA - Idővonal",
+    posters: "FRONTOPEDIA - Plakátok",
   };
-  const savedScroll = { wall: 0, timeline: 0 };
+  const hashes = { "#fal": "wall", "#idovonal": "timeline", "#plakatok": "posters" };
+  const bodyClass = { intro: "is-intro", wall: "is-wall", timeline: "is-timeline", posters: "is-posters" };
+  const savedScroll = { intro: 0, wall: 0, timeline: 0, posters: 0 };
   let current = null;
+  let wallSeen = false;
 
-  /* ---------------- Nézetek (#fal, #idovonal) ---------------- */
+  /* ---------------- Nézetek (nyitóoldal, #fal, #idovonal, #plakatok) ---------------- */
 
   function viewFromHash() {
-    return location.hash === "#idovonal" ? "timeline" : "wall";
+    return hashes[location.hash] || "intro";
   }
+
+  // a nyitóoldal függőlegesen görög, a többi vízszintesen
+  const scrollPos = (name) => (name === "intro" ? "scrollTop" : "scrollLeft");
 
   function showView(name) {
     if (name === current) return;
-    if (current) savedScroll[current] = views[current].scrollLeft;
+    if (current) savedScroll[current] = views[current][scrollPos(current)];
     closeFigure();
     closeLightbox();
+    if (current === "intro") pauseVideo();
 
     Object.entries(views).forEach(([key, el]) => {
       el.hidden = key !== name;
     });
-    body.classList.toggle("is-wall", name === "wall");
-    body.classList.toggle("is-timeline", name === "timeline");
+    Object.entries(bodyClass).forEach(([key, cls]) => body.classList.toggle(cls, key === name));
     document.title = titles[name];
     current = name;
 
     if (name === "timeline") layoutTimeline();
-    views[name].scrollLeft = savedScroll[name];
+    if (name === "posters") layoutPosters();
+    views[name][scrollPos(name)] = savedScroll[name];
+    fitPlayer();
+    if (name === "wall" && !wallSeen && !musicAsk.open) {
+      wallSeen = true;
+      hintPulse();
+    }
   }
 
   window.addEventListener("hashchange", () => showView(viewFromHash()));
@@ -44,7 +60,7 @@
     tab.addEventListener("click", (e) => {
       if (tab.dataset.view === current) {
         e.preventDefault();
-        smoothScrollTo(views[current], 0);
+        if (current !== "intro") smoothScrollTo(views[current], 0);
       }
       tab.blur();
     });
@@ -104,6 +120,7 @@
 
   enableWheel(wallView, 3);
   enableWheel(timelineView, 3);
+  enableWheel(postersView, 3);
 
   /* ---------------- A fal: ábrák kiemelése ---------------- */
 
@@ -398,6 +415,8 @@
     cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => {
       layoutTimeline();
+      layoutPosters();
+      fitPlayer();
       if (locked && activeFigure && anchor) placePanel(activeFigure, false);
     });
   });
@@ -413,11 +432,12 @@
   const lbCount = lightbox.querySelector(".lb-count");
   const lbClose = lightbox.querySelector(".lb-close");
   const galleryImgs = Array.from(canvas.querySelectorAll(".image-column img"));
-  const gallery = galleryImgs.map((img) => ({
+  const timelineGallery = galleryImgs.map((img) => ({
     src: img.getAttribute("src"),
     alt: img.alt,
     title: img.closest(".tl-section").querySelector("h3").textContent.trim(),
   }));
+  let gallery = timelineGallery; // az éppen nyitott galéria képei
   let lightboxOpen = false;
   let lbIndex = 0;
   let lastFocus = null;
@@ -438,7 +458,8 @@
     });
   }
 
-  function openLightbox(i) {
+  function openLightbox(i, items) {
+    gallery = items || timelineGallery;
     lastFocus = document.activeElement;
     lightbox.hidden = false;
     lightboxOpen = true;
@@ -509,10 +530,106 @@
       return;
     }
     if (e.key === "Escape") closeFigure();
+    if (current === "intro") return;
     const view = views[current];
     if (e.key === "ArrowRight") smoothScrollTo(view, view.scrollLeft + view.clientWidth * 0.4);
     if (e.key === "ArrowLeft") smoothScrollTo(view, view.scrollLeft - view.clientWidth * 0.4);
   });
+
+  /* ---------------- Plakátfal ---------------- */
+
+  // A plakátok a posters.js-ben vannak, időrendben. Két sorban kerülnek a falra:
+  // mindig abba a sorba, amelyik éppen rövidebb, így balról jobbra időrendben
+  // haladnak. Minden méret vh-ban van, ezért átméretezéskor nem kell újrarakni.
+  // A kis elforgatás és elcsúszás plakátonként rögzített (a fájlnévből számolt),
+  // így minden betöltéskor ugyanúgy néz ki a fal.
+  const posterWall = document.getElementById("poster-wall");
+  const POSTERS = Array.isArray(window.POSTERS) ? window.POSTERS : [];
+  const MONTHS = ["január", "február", "március", "április", "május", "június",
+    "július", "augusztus", "szeptember", "október", "november", "december"];
+  const posterGallery = POSTERS.map((p) => ({
+    src: p.full || p.src,
+    alt: p.title || "Plakát",
+    title: `${formatDate(p.date)}${p.title ? " | " + p.title : ""}`,
+  }));
+  let postersBuilt = false;
+
+  function formatDate(iso) {
+    const [y, m, d] = iso.split("-");
+    return `${y}. ${m}. ${d}.`;
+  }
+
+  function seeded(str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619);
+    return () => {
+      h = Math.imul(h ^ (h >>> 15), 2246822507);
+      h = Math.imul(h ^ (h >>> 13), 3266489909);
+      return ((h ^= h >>> 16) >>> 0) / 4294967296;
+    };
+  }
+
+  function layoutPosters() {
+    if (postersBuilt || postersView.hidden) return;
+    postersBuilt = true;
+
+    if (!POSTERS.length) {
+      posterWall.innerHTML = '<p class="pw-empty">A plakátok hamarosan felkerülnek.</p>';
+      return;
+    }
+
+    const ROW_TOP = [11, 54]; // a két sor teteje (vh)
+    const ROW_H = 39; // egy plakát magassága (vh)
+    const START = 24; // a fal eleje (vh)
+    const rowX = [START, START];
+    let lastMonth = "";
+    const frag = document.createDocumentFragment();
+
+    POSTERS.forEach((p, i) => {
+      const rnd = seeded(p.src);
+      const month = p.date.slice(0, 7);
+
+      // új hónap: mindkét sor kiegyenlítődik, és a falra felkerül a hónap neve
+      if (month !== lastMonth) {
+        const x = Math.max(rowX[0], rowX[1]) + (lastMonth ? 4 : 0);
+        const label = document.createElement("div");
+        label.className = "pw-month";
+        label.style.left = `${x}vh`;
+        const [y, m] = month.split("-");
+        label.innerHTML = `<span>${y}</span> ${MONTHS[parseInt(m, 10) - 1]}`;
+        frag.appendChild(label);
+        rowX[0] = rowX[1] = x + 11;
+        lastMonth = month;
+      }
+
+      const row = rowX[0] <= rowX[1] ? 0 : 1;
+      const h = ROW_H * (0.9 + rnd() * 0.12);
+      const w = (h * p.w) / p.h;
+      const x = rowX[row] + (rnd() * 2.6 - 0.8);
+      const y = ROW_TOP[row] + (ROW_H - h) / 2 + (rnd() * 2.4 - 1.2);
+      const rot = rnd() * 3.6 - 1.8;
+      rowX[row] = x + w + 1.2 + rnd() * 2;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pw-poster" + (rnd() < 0.55 ? " is-taped" : " is-pasted");
+      btn.style.cssText = `left:${x}vh;top:${y}vh;width:${w}vh;height:${h}vh;--rot:${rot}deg;`;
+      btn.setAttribute("aria-label", `${formatDate(p.date)} plakát${p.title ? ": " + p.title : ""}`);
+      btn.innerHTML =
+        `<img src="${p.src}" alt="" width="${p.w}" height="${p.h}" loading="lazy" decoding="async" />` +
+        `<span class="pw-tape pw-tape-l" style="--t:${rnd() * 16 - 8}deg"></span>` +
+        `<span class="pw-tape pw-tape-r" style="--t:${rnd() * 16 - 8}deg"></span>` +
+        `<span class="pw-date">${formatDate(p.date)}</span>`;
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openLightbox(i, posterGallery);
+      });
+      frag.appendChild(btn);
+    });
+
+    posterWall.appendChild(frag);
+    posterWall.style.width = `${Math.max(rowX[0], rowX[1]) + 24}vh`;
+  }
 
   /* ---------------- Zene: Spotify lejátszási lista ---------------- */
 
@@ -552,11 +669,40 @@
       musicAsk.close();
     });
   });
-  musicAsk.addEventListener("close", hintPulse);
+  musicAsk.addEventListener("close", () => {
+    if (current === "wall" && !wallSeen) {
+      wallSeen = true;
+      hintPulse();
+    }
+  });
+
+  /* ---------------- Videó a nyitóoldalon ---------------- */
+
+  const introVideo = introView.querySelector("video");
+  // ha elindul a videó, a zene megáll, hogy ne szóljon a kettő egyszerre
+  introVideo.addEventListener("play", () => {
+    if (spotify && musicStarted) {
+      spotify.pause();
+      musicStarted = false;
+    }
+  });
+
+  function pauseVideo() {
+    if (!introVideo.paused) introVideo.pause();
+  }
+
+  /* ---------------- Lejátszó helye ---------------- */
+
+  // ha a fülsor elérné a jobb felső sarokban ülő lejátszót, az lecsúszik
+  const nav = document.querySelector(".site-nav");
+  function fitPlayer() {
+    const navRight = nav.getBoundingClientRect().right;
+    const playerLeft = window.innerWidth - 16 - player.offsetWidth;
+    body.classList.toggle("player-low", navRight + 16 > playerLeft);
+  }
 
   /* ---------------- Indulás ---------------- */
 
-  showView(viewFromHash());
   if (typeof musicAsk.showModal === "function") musicAsk.showModal();
-  else hintPulse();
+  showView(viewFromHash());
 })();

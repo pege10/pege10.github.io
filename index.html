@@ -15,7 +15,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="is-wall">
+  <body class="is-intro">
     <!-- Fejléc: ugyanaz a három fül mindkét nézetben -->
     <nav class="site-nav" aria-label="Menü">
       <a class="tab tab-fal" href="#fal" data-view="wall">
@@ -43,12 +43,158 @@
       <a class="tab tab-idovonal" href="#idovonal" data-view="timeline">
         <span class="tab-label">idővonal</span>
       </a>
+      <a class="tab tab-plakatok" href="#plakatok" data-view="posters">
+        <span class="tab-label">plakátok</span>
+      </a>
     </nav>
 
     <!-- Lejátszási lista: betöltéskor rákérdezünk, elinduljon-e (hangot a böngésző csak kattintás után enged) -->
     <div class="player">
       <div id="spotify-embed"></div>
     </div>
+
+    <!-- ===================== NYITÓOLDAL ===================== -->
+    <main id="intro" class="view" aria-label="Bevezető" hidden>
+      <div class="intro-inner">
+        <header class="intro-hero">
+          <p class="intro-kicker">FRONTOPEDIA</p>
+          <h1>A Fal</h1>
+          <p class="intro-sub">Egy digitális emlékezethely létrejötte</p>
+        </header>
+
+        <aside class="intro-side">
+          <figure class="intro-video">
+            <video controls preload="none" playsinline poster="video/mome-fal-event.jpg">
+              <source src="video/mome-fal-event.mp4" type="video/mp4" />
+            </video>
+            <figcaption>MOME Fal event | 7:06</figcaption>
+          </figure>
+          <a class="intro-enter" href="#fal">Tovább a falra</a>
+        </aside>
+
+        <div class="intro-texts">
+          <article class="intro-article">
+            <p>
+              A Moholy-Nagy Művészeti Egyetemen 2025 januárjában országos médiafigyelmet kiváltva hallgatói
+              megmozdulások kezdődtek. Az események hátterében a modellváltást követően kiépült kuratóriumi
+              túlhatalom, az autoriter vezetői stílus, a demokratikus egyetemi döntéshozatal kiüresítése, a
+              szenátus akaratának többszöri figyelembe nem vétele, valamint a szakmai autonómia fokozatos
+              felszámolása húzódott. A kumulálódó feszültség végül az egyetem strukturális átszervezése és az új
+              egységek élére pályázó személyek kinevezése – és ki nem nevezése – kapcsán kapott lángra.
+            </p>
+            <p>
+              Az egyetem hallgatói létrehozták a MOME FRONT-ot, ami pillanatok alatt láthatóvá és hallhatóvá
+              vált. Az autonómia helyreállítása érdekében több, békés és kreatív performatív akciót szerveztek
+              (lásd „matricaháború", „a taps"). Ezek közül monumentális mementóként emelkedik ki a „Fal". Közös
+              alkotásként jött létre, a közösség érzéseit, frusztrációit, vágyait szimbolikus formákkal
+              megjelenítve.
+            </p>
+            <p>Ilyen paradigmatikus változások hullámverésében kezdődött a 2025-ös év.</p>
+            <p>
+              A tavaszi szemeszter kezdetén adta magát az ötlet, hogy a főként kulturális antropológiai
+              módszertanra építő Modern mitológiák kurzus keretein belül a körülöttünk zajló eseményekre
+              fókuszáljunk. A hirtelen és radikális változások, a társadalmi megosztottság és polarizáció, a
+              közösség fenyegetettség-érzete ugyanis mind hozzájárulnak a mítoszok kialakulásához és
+              terjedéséhez. A kurzus során alapelvként fogalmaztuk meg, hogy nem akartunk véleményt megfogalmazni,
+              és semmiképp sem szerettünk volna szereplőket megítélni. Ennél nehezebb feladatot, az események
+              elemzését tűztük ki célként. Úgy szerettünk volna kutatói szemmel az átalakulás menetére és
+              reprezentációira tekinteni, hogy közben azoknak magunk is részesei, többen aktív szereplői voltunk.
+            </p>
+            <p>
+              A kurzus résztvevőivel hozzákezdtünk a történelmi jelentőségű esemény forrásainak megőrzéséhez:
+              képeket, dokumentumokat gyűjtöttünk, belefogtunk a Fal jelentéseinek és jelentőségének az
+              értelmezésébe. Megindult az „örökségesítési" folyamat, a digitális emlékezethely létrehozása. Ez a
+              felület ennek a közös munkának a lenyomata. Egy digitális archívum, ami egyszerre forrásgyűjtemény és
+              kísérlet arra, hogy közös történetünk megértsük és megőrizzük. Egy emlékezethely azonban sosem válik
+              teljesen lezárttá. A kurzus keretében elindított gyűjtés csupán az első lépés egy közös archívum
+              felépítésében. Ha rendelkezel a 2025-ös eseményekhez vagy a Falhoz kapcsolódó fotókkal,
+              dokumentumokkal, személyes történetekkel, és szívesen megosztanád őket, várjuk a hozzájárulásodat,
+              hogy ez a digitális tér tovább gazdagodhasson.
+            </p>
+
+            <section class="intro-credits" aria-label="Alkotók">
+              <h2>A kurzus résztvevői, egyben a digitális emlékezethely alkotói</h2>
+              <p>
+                Antal Anita Vivien, Balogh Eszter, Csenki Csongor Csaba, Fragoso-Durkó Amanda, Kollár Ágnes,
+                Lengyel Dömötör, Máté Dorottya, Mező Levente, Muresan Dávid, Péri Gergő Gábor, Petri Csenge,
+                Sáránszky Bence Balázs, Sebők Alexandra, Szabó Borbála Sára, Takács Bori, Zöldi Nóra
+              </p>
+              <dl>
+                <div><dt>Oktató</dt><dd>Dr. Povedák István</dd></div>
+                <div><dt>Webdesign</dt><dd>Péri Gergő Gábor</dd></div>
+              </dl>
+            </section>
+          </article>
+
+          <article class="intro-essay">
+            <h2>Felfestjük hát mindenkinek</h2>
+            <p class="intro-byline">Zöldi Nóra</p>
+            <p>
+              A tér fogalmára a mai napig hajlamosak vagyunk magától értetődő, neutrális adottságként gondolni.
+              Holott a huszadik század második felétől kezdve számos tudományterület felismerte, hogy a tér és a
+              benne lévő/történő dolgok viszonya interaktív: a teret termeljük és a tér termel minket. E szerves
+              kapcsolat tudatosítása megnyitja a cselekvés lehetőségét az egyén előtt, hiszen ebben a felfogásban
+              nem adott viszonyok elszenvedőjeként, hanem aktív alakítóként értelmeződik.
+            </p>
+            <p>
+              A tér fizikai aspektusa lehetővé teszi a láttatást, segít kézzelfoghatóvá tenni azt, ami a
+              társadalmi dimenzióban inkább absztrakt formában van jelen. Képes az egyes szereplők által fontosnak
+              tartott kérdéseket érzékelhetővé - láthatóvá, hallhatóvá, tapinthatóvá - tenni. Ez a potenciál
+              azonban nem realizálódik egyenlő módon minden társadalmi csoport számára. A tér valóságalkotó
+              szerepe révén az érdekérvényesítés színtere, nem csupán materiális, hanem ideológiai értelemben is.
+              Mivel a mozgásteret a cselekvésről alkotott koncepciók is befolyásolják, nem árt elgondolkodni azon,
+              mik az általunk követett szabályrendszerek forrásai. Korántsem evidens, hogy ki határozza meg, mi a
+              dolgok rendje.
+            </p>
+            <p>
+              A jogosultság kérdése alapvető szempont a terek tipizálásában. Bár a “magán” és a “köz” fogalmak
+              mentén látszólag egyértelmű a különbségtétel, valójában számos hely e két halmaz metszetében
+              található. A privát- és nyilvános szféra között átmenetet képző, ún. félnyilvános terek egyik
+              kiemelt példája az egyetemi campus. Bár az intézmény közfeladatot lát el és önigazgatási szervvel
+              rendelkezik, az egyenletnek részese a működést biztosító fenntartó is. Ideális esetben utóbbi szerepe
+              kimerül a szükséges infrastruktúra megteremtésében, és tevékenysége mind a demokratikus
+              berendezkedést, mind az akadémiai szabadságot tiszteletben tartja. Nem jogot formál az egyetem
+              tereire, hanem biztosítja a tereket és a joggyakorlás lehetőségét az egyetemi polgárság számára.
+            </p>
+            <p>
+              A MOME modellváltása és az új campus átadása nem csupán időben, de szimbolikus értelemben is
+              összefonódott. Az immár alapítványi fenntartó az egyetem frissen átadott, “már-már éteri fehérségben
+              a föld felett lebegő” tereiben lépett színre. Igazi tabula rasa pillanat volt ez, ahol a korszakváltás
+              érzéki tapasztalat tárgyává válhatott. Az újdonságok mibenléte azonban csak később tárult fel. Habár
+              a tervezők az “időtálló, neutrális dizájnt” a szabadság és a lehetőségek hordozójának szánták, az új
+              vezetőség tevékenysége mentén a terek egyre inkább fegyelmező jelleget öltöttek - ennek volt első,
+              jól érzékelhető megnyilvánulása a “matricaháború”.
+            </p>
+            <p>
+              A semlegesített terep ideája és valósága tehát nem feltétlenül esik egybe, a letisztultság jelentése
+              (enged-e avagy tilt) nem statikus, hanem a benne zajló társadalmi gyakorlatok mentén dől el. A falak
+              sosem függetleníthetők a tágabb kontextustól, sosem kezelhetők ideológiamentes, makulátlan
+              felületként: a művészeti intézménykritikából ismert “white cube” és a campus esete között termékeny
+              párhuzam vonható.
+            </p>
+            <p>
+              Adódik a kérdés: mi az, amit megmutat, mi az, amit elhallgat a tér? A modellváltást követően a MOME
+              működését a fokozatos központosítás, az egyetemi önkormányzat megkerülése, az alternatív hangok
+              informális szférába szorítása jellemezte. Mivel nem nyílt platform érdemi vitára, a feszültségek
+              búvópatakként éltek az egyetem falai között. A MOME Front genezise és küldetése abban állt, hogy
+              felszínre segítse ezeket, megteremtse a diskurzus terét, helyet követeljen az eltérő álláspontoknak.
+              Az elsőre radikálisnak ható, performansz-jellegű fellépések logikus reakcióként következtek a
+              korábbi egyeztetési törekvések parttalanságából. A Fal maradandó, megkerülhetetlen mivoltával
+              kiemelkedik az egyéb akciók közül, ugyanakkor igazi erejét a festés eseménye adja. A jelenleg is
+              látható felület nem önmagában és önmagáért áll, hanem egyetemi polgárok kollektív cselekvésének
+              lenyomata - értelme és értéke nem fejthető ki puszta esztétikai elemzés útján. Ahogy azt a graffiti
+              és poszt-graffiti eszköztárából merítő vizuális elemek szerteágazó jellege is mutatja, az “alkotás”
+              összetartó ereje a történés maga.
+            </p>
+            <p>
+              A jövőre nézve fontos szem előtt tartani, hogy a Fal sem kerülheti el a tértermelés fentebb
+              rögzített törvényszerűségeit. Létrejöttével a folyamat részévé vált, így nem hazudhatja magát
+              időtlennek, különben maga is tekintéllyé dermed.
+            </p>
+          </article>
+        </div>
+      </div>
+    </main>
 
     <!-- ===================== A FAL ===================== -->
     <main id="wall" class="view" aria-label="A fal">
@@ -341,6 +487,11 @@
       </div>
     </main>
 
+    <!-- ===================== PLAKÁTOK ===================== -->
+    <main id="posters" class="view" aria-label="Plakátok" hidden>
+      <div class="pw-wall" id="poster-wall"></div>
+    </main>
+
     <!-- Galéria az idővonal képeihez -->
     <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galéria" hidden>
       <figure class="lb-figure">
@@ -361,6 +512,9 @@
       </button>
     </div>
 
+    <!-- vissza a nyitóoldalra -->
+    <a class="info-btn" href="#bevezeto" aria-label="A projektről" title="A projektről">i</a>
+
     <!-- Előadás mód: a sötétítés és a kontúrok ki-be kapcsolása -->
     <button class="shade-toggle" id="shade-toggle" type="button" aria-pressed="true" aria-label="Kiemelés a falon" title="Kiemelés ki/be">
       <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -377,6 +531,7 @@
       </div>
     </dialog>
 
+    <script src="posters.js"></script>
     <script src="app.js"></script>
     <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
   </body>

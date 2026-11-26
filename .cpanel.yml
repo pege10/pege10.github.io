@@ -1,0 +1,12 @@
+---
+# cPanel Git Version Control: a fal.mome.hu webgyökerébe csak az oldal fájljai kerülnek.
+# A public_html/.htaccess (jelszavas védelem) nincs a repóban, ezért a másolás nem írja felül.
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/falmome/public_html
+    - /bin/mkdir -p $DEPLOYPATH/images/web $DEPLOYPATH/images/posters $DEPLOYPATH/video
+    - /bin/cp -f index.html timeline.html styles.css app.js posters.js favicon.svg favicon-32.png apple-touch-icon.png $DEPLOYPATH/
+    - /bin/cp -f images/fal.jpg images/1_elfolyo_ido.png images/2_robin_masters.png images/3_megmerettettel.png images/4_toygmoe.png images/5_game_over.png images/9_bauhaus_logok.png $DEPLOYPATH/images/
+    - /bin/cp -Rf images/web/. $DEPLOYPATH/images/web/
+    - /bin/cp -Rf images/posters/. $DEPLOYPATH/images/posters/
+    - /bin/cp -f video/mome-fal-event.mp4 video/mome-fal-event.jpg $DEPLOYPATH/video/

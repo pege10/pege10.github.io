@@ -23,8 +23,13 @@ body.is-wall {
   background: var(--black);
 }
 
-body.is-timeline {
+body.is-timeline,
+body.is-intro {
   background: var(--red);
+}
+
+body.is-posters {
+  background: #d9d6cf;
 }
 
 .view {
@@ -72,13 +77,19 @@ body.is-timeline {
   background: var(--red);
 }
 
-body.is-timeline .tab-front {
+body.is-timeline .tab-front,
+body.is-intro .tab-front {
   background: var(--white);
 }
 
 .tab-idovonal {
   background: var(--blue);
   color: var(--white);
+}
+
+.tab-plakatok {
+  background: var(--white);
+  color: var(--red);
 }
 
 .tab-label,
@@ -103,12 +114,15 @@ body.is-timeline .tab-front {
 }
 
 /* A falon a fülek felhúzva várnak, mindegyik külön csúszik le, ha rámutatsz */
-body.is-wall .tab {
+body.is-wall .tab,
+body.is-posters .tab {
   transform: translateY(-11.5vh);
 }
 
 body.is-wall .tab:hover,
-body.is-wall .tab:focus-visible {
+body.is-wall .tab:focus-visible,
+body.is-posters .tab:hover,
+body.is-posters .tab:focus-visible {
   transform: none;
 }
 
@@ -136,11 +150,230 @@ body.is-wall .tab:focus-visible {
   margin-left: calc(-1 * var(--art));
 }
 
-/* keskenyebb ablakban a fejléc elérné, ott lent a helye */
-@media (max-aspect-ratio: 3/2) {
-  .player {
-    top: auto;
-    bottom: 16px;
+/* ha a fülek elérnék (az app.js méri), a lejátszó lecsúszik a jobb alsó sarokba */
+body.player-low .player {
+  top: auto;
+  bottom: 16px;
+}
+
+/* ---------- Kis gombok a bal alsó sarokban ---------- */
+
+.info-btn {
+  position: fixed;
+  left: 12px;
+  bottom: 14px;
+  z-index: 35;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  clip-path: var(--octagon);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.info-btn:hover,
+.info-btn:focus-visible {
+  outline: none;
+  opacity: 1;
+  background: var(--blue);
+}
+
+body.is-intro .info-btn {
+  display: none;
+}
+
+/* ---------- Nyitóoldal ---------- */
+
+#intro {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  background: var(--red);
+  scrollbar-color: rgba(0, 0, 0, 0.45) transparent;
+}
+
+.intro-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 68ch) minmax(300px, 1fr);
+  grid-template-areas:
+    "hero hero"
+    "texts side";
+  column-gap: clamp(32px, 5vw, 96px);
+  box-sizing: border-box;
+  max-width: 1500px;
+  padding: calc(17vh + 5vh) clamp(20px, 6vw, 110px) 12vh 20.3vh;
+  color: var(--black);
+}
+
+.intro-hero {
+  grid-area: hero;
+  margin-bottom: 6vh;
+}
+
+.intro-kicker {
+  margin: 0 0 1.2vh;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.intro-hero h1 {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(64px, 13vh, 150px);
+  font-weight: 700;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.intro-sub {
+  margin: 1.6vh 0 0;
+  color: var(--white);
+  font-size: clamp(18px, 3vh, 30px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.intro-side {
+  grid-area: side;
+  align-self: start;
+  position: sticky;
+  top: 4vh;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.intro-video {
+  margin: 0;
+}
+
+.intro-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--black);
+}
+
+.intro-video figcaption {
+  margin-top: 8px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.intro-enter {
+  --cut: 10px;
+  align-self: flex-start;
+  padding: 16px 26px;
+  background: var(--black);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+  transition: background-color 0.15s ease;
+}
+
+.intro-enter::after {
+  content: " \2192";
+}
+
+.intro-enter:hover,
+.intro-enter:focus-visible {
+  outline: none;
+  background: var(--blue);
+}
+
+.intro-texts {
+  grid-area: texts;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.intro-texts p {
+  margin: 0 0 1.1em;
+}
+
+.intro-texts h2 {
+  margin: 0 0 0.6em;
+  color: var(--white);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.intro-credits {
+  margin-top: 3em;
+  padding-top: 1.6em;
+  border-top: 2px solid var(--black);
+}
+
+.intro-credits h2 {
+  color: var(--black);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.intro-credits dl {
+  display: grid;
+  gap: 0.3em;
+  margin: 1.2em 0 0;
+}
+
+.intro-credits dl div {
+  display: flex;
+  gap: 1ch;
+}
+
+.intro-credits dt {
+  font-weight: 700;
+}
+
+.intro-credits dt::after {
+  content: ":";
+}
+
+.intro-credits dd {
+  margin: 0;
+}
+
+.intro-essay {
+  margin-top: 10vh;
+}
+
+.intro-byline {
+  margin-bottom: 2em !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .intro-inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "hero"
+      "side"
+      "texts";
+    padding-left: clamp(16px, 5vw, 40px);
+    padding-right: clamp(16px, 5vw, 40px);
+  }
+
+  .intro-side {
+    position: static;
+    margin-bottom: 6vh;
   }
 }
 
@@ -492,6 +725,157 @@ body.figure-locked .figure-panel {
   left: 0;
   display: block;
   overflow: visible;
+}
+
+/* ---------- Plakátfal ---------- */
+
+#posters {
+  background: #d9d6cf;
+  scrollbar-color: rgba(0, 0, 0, 0.35) transparent;
+}
+
+/* vakolt, kicsit foltos fal: két zajréteg + felülről eső fény */
+.pw-wall {
+  position: relative;
+  height: 100%;
+  min-width: 100%;
+  background-color: #d9d6cf;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, 0.07) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2  0 0 0 0 0.18  0 0 0 0 0.15  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='900'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='4' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.32  0 0 0 0 0.27  0 0 0 .55 -.18'/></filter><rect width='100%' height='100%' filter='url(%23m)'/></svg>");
+  background-size: 100% 100%, 260px 260px, 900px 900px;
+}
+
+.pw-empty {
+  position: absolute;
+  top: 50%;
+  left: 24vh;
+  margin: 0;
+  transform: translateY(-50%);
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 2.4vh;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* a hónap neve a falra fújva, függőlegesen */
+.pw-month {
+  position: absolute;
+  top: 11vh;
+  height: 84vh;
+  width: 9vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  color: rgba(230, 0, 0, 0.88);
+  font-size: 6.2vh;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 0.35vh rgba(230, 0, 0, 0.45);
+  pointer-events: none;
+  user-select: none;
+}
+
+.pw-month span {
+  margin-bottom: 0.4em;
+  color: rgba(0, 0, 0, 0.72);
+  text-shadow: 0 0 0.3vh rgba(0, 0, 0, 0.3);
+}
+
+.pw-poster {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: #f4f1ea;
+  cursor: zoom-in;
+  transform: rotate(var(--rot));
+  box-shadow: 0 0.25vh 0.5vh rgba(0, 0, 0, 0.18), 0 1.2vh 2.4vh rgba(0, 0, 0, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pw-poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* papír: enyhe ráncok és fényfoltok a kép fölött */
+.pw-poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 35%, rgba(0, 0, 0, 0.06) 70%, rgba(255, 255, 255, 0.08) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='500'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.012 .03' numOctaves='3' seed='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 -.2'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
+  background-size: 100% 100%, cover;
+  mix-blend-mode: multiply;
+}
+
+/* beragasztott plakát: szinte árnyék nélkül, a fal síkjában */
+.pw-poster.is-pasted {
+  box-shadow: 0 0.1vh 0.3vh rgba(0, 0, 0, 0.16);
+}
+
+.pw-poster:hover,
+.pw-poster:focus-visible {
+  z-index: 5;
+  outline: none;
+  transform: rotate(0deg) scale(1.03);
+  box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.3);
+}
+
+.pw-poster:focus-visible {
+  box-shadow: 0 0 0 0.4vh var(--blue), 0 1vh 3vh rgba(0, 0, 0, 0.3);
+}
+
+/* ragasztószalag a felső sarkokon (csak a "taped" plakátokon) */
+.pw-tape {
+  display: none;
+  position: absolute;
+  top: -1.3vh;
+  width: 7vh;
+  height: 2.4vh;
+  background: rgba(232, 224, 200, 0.78);
+  box-shadow: 0 0.1vh 0.2vh rgba(0, 0, 0, 0.12);
+  clip-path: polygon(0 8%, 6% 0, 12% 10%, 18% 0, 82% 0, 88% 9%, 94% 0, 100% 10%, 100% 90%, 94% 100%, 88% 91%, 82% 100%, 18% 100%, 12% 92%, 6% 100%, 0 90%);
+}
+
+.pw-poster.is-taped .pw-tape {
+  display: block;
+}
+
+.pw-tape-l {
+  left: -1.6vh;
+  transform: rotate(calc(-38deg + var(--t)));
+}
+
+.pw-tape-r {
+  right: -1.6vh;
+  transform: rotate(calc(38deg + var(--t)));
+}
+
+/* a dátum ceruzával a plakát alá írva */
+.pw-date {
+  position: absolute;
+  left: 0.4vh;
+  bottom: -2.6vh;
+  color: rgba(0, 0, 0, 0.62);
+  font-size: 1.45vh;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transform: rotate(calc(-1 * var(--rot)));
+  transform-origin: left top;
 }
 
 /* ---------- Galéria (idővonal képei) ---------- */
