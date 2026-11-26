@@ -380,6 +380,166 @@ body.player-low .player {
   display: none;
 }
 
+/* Saját vezérlősáv: rövid, középen, saját levágott sarkú dobozban (a böngészőé
+   belelógna a videó levágott sarkaiba). Lejátszás közben elbújik, ha nem
+   mozdul az egér. */
+.video-bar {
+  --cut: 1vh;
+  position: absolute;
+  left: 50%;
+  bottom: 2.2vh;
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  box-sizing: border-box;
+  width: min(44vh, calc(100% - 8vh));
+  padding: 0.8vh 1.8vh 0.8vh 0.8vh;
+  background: rgba(0, 0, 0, 0.78);
+  color: var(--white);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.intro-video.is-started .video-frame:not(.is-playing) .video-bar,
+.intro-video.is-started .video-frame.bar-awake .video-bar {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease;
+}
+
+.video-frame.is-playing:not(.bar-awake) {
+  cursor: none;
+}
+
+.vb-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: max(28px, 3.4vh);
+  height: max(28px, 3.4vh);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.vb-btn svg {
+  width: max(16px, 2.2vh);
+  height: max(16px, 2.2vh);
+}
+
+.vb-btn:hover,
+.vb-btn:focus-visible {
+  outline: none;
+  color: var(--red);
+}
+
+/* a lejátszógomb piros nyolcszög, mint a borítón */
+.vb-play {
+  background: var(--red);
+  clip-path: var(--octagon);
+}
+
+.vb-play svg {
+  width: max(13px, 1.7vh);
+  height: max(13px, 1.7vh);
+}
+
+.vb-play:hover,
+.vb-play:focus-visible {
+  color: var(--white);
+  background: var(--blue);
+}
+
+.vb-play .i-pause,
+.video-frame.is-playing .vb-play .i-play,
+.vb-mute .i-muted,
+.video-frame.is-muted .vb-mute .i-sound {
+  display: none;
+}
+
+.video-frame.is-playing .vb-play .i-pause,
+.video-frame.is-muted .vb-mute .i-muted {
+  display: block;
+}
+
+.vb-track {
+  position: relative;
+  flex: 1;
+  height: max(4px, 0.5vh);
+  background: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  touch-action: none;
+}
+
+/* nagyobb fogási felület, mint amilyen vékony a csík */
+.vb-track::before {
+  content: "";
+  position: absolute;
+  inset: -1.4vh 0;
+}
+
+.vb-track:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
+.vb-buffer,
+.vb-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+.vb-buffer {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.vb-fill {
+  background: var(--red);
+}
+
+/* a csík végén egy kis piros nyolcszög */
+.vb-fill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: max(-7px, -0.9vh);
+  width: max(14px, 1.8vh);
+  height: max(14px, 1.8vh);
+  background: var(--red);
+  clip-path: var(--octagon);
+  transform: translateY(-50%);
+}
+
+.vb-time {
+  flex: none;
+  font-size: clamp(11px, 1.4vh, 18px);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+/* teljes képernyőn nincs sarokvágás, a kép kifér */
+.video-frame:fullscreen {
+  --cut: 1vh;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  clip-path: none;
+}
+
+.video-frame:fullscreen video {
+  object-fit: contain;
+}
+
 .intro-video figcaption {
   display: flex;
   align-items: center;
@@ -416,8 +576,19 @@ body.player-low .player {
   background: var(--blue);
 }
 
-/* a két szöveg hasábokban fut tovább jobbra */
+/* A két szöveg egymás után, mindkettő a saját hasábjaiban fut jobbra; az
+   esszé így mindig új hasábban kezdődik (Safariban is). A hasábszámot és a
+   szélességet az app.js méri. */
 .intro-texts {
+  flex: none;
+  display: flex;
+  gap: 7vh;
+  height: 100%;
+  font-size: clamp(13px, 1.7vh, 22px);
+  line-height: 1.6;
+}
+
+.intro-texts > article {
   flex: none;
   box-sizing: border-box;
   width: 50vh;
@@ -425,8 +596,6 @@ body.player-low .player {
   column-width: 50vh;
   column-gap: 7vh;
   column-fill: auto;
-  font-size: clamp(13px, 1.7vh, 22px);
-  line-height: 1.6;
 }
 
 .intro-texts p {
@@ -440,6 +609,7 @@ body.player-low .player {
   font-weight: 700;
   line-height: 1.1;
   text-transform: uppercase;
+  -webkit-column-break-after: avoid;
   break-after: avoid;
 }
 
@@ -447,7 +617,12 @@ body.player-low .player {
   margin-top: 2.4em;
   padding-top: 1.4em;
   border-top: 2px solid var(--black);
+  -webkit-column-break-inside: avoid;
   break-inside: avoid;
+}
+
+.intro-credits h2 {
+  line-height: 1.35;
 }
 
 .intro-credits h2 {
@@ -479,11 +654,6 @@ body.player-low .player {
   margin: 0;
 }
 
-/* az esszé új hasábban kezdődik */
-.intro-essay {
-  break-before: column;
-}
-
 .intro-byline {
   margin-bottom: 2em !important;
   font-weight: 700;
@@ -502,6 +672,10 @@ body.player-low .player {
   }
 
   .intro-texts {
+    gap: 40px;
+  }
+
+  .intro-texts > article {
     width: min(50vh, calc(100vw - 48px));
     column-width: min(50vh, calc(100vw - 48px));
     column-gap: 40px;

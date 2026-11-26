@@ -9,10 +9,10 @@
   const postersView = document.getElementById("posters");
   const views = { intro: introView, wall: wallView, timeline: timelineView, posters: postersView };
   const titles = {
-    intro: "FRONTOPEDIA",
-    wall: "FRONTOPEDIA - A fal",
-    timeline: "FRONTOPEDIA - Idővonal",
-    posters: "FRONTOPEDIA - Plakátok",
+    intro: "A Fal",
+    wall: "A Fal | a fal",
+    timeline: "A Fal | Idővonal",
+    posters: "A Fal | Plakátok",
   };
   const hashes = { "#fal": "wall", "#idovonal": "timeline", "#plakatok": "posters" };
   const bodyClass = { intro: "is-intro", wall: "is-wall", timeline: "is-timeline", posters: "is-posters" };
@@ -781,26 +781,32 @@
 
   /* ---------------- Nyitóoldal: hasábok ---------------- */
 
-  // A szöveg hasábokban fut jobbra. A doboz szélességét a tényleges tördeléshez
-  // igazítjuk, különben a túlcsorduló hasábok nem számítanának a görgetésbe.
-  const introTexts = introView.querySelector(".intro-texts");
+  // A két szöveg (cikk, esszé) a saját hasábjaiban fut jobbra. Mindkét doboz
+  // szélességét a tényleges tördeléshez igazítjuk, különben a túlcsorduló
+  // hasábok rácsúsznának a következőre, és nem számítanának a görgetésbe.
+  const introBlocks = Array.from(introView.querySelectorAll(".intro-texts > article"));
 
-  function layoutIntro() {
-    if (introView.hidden) return;
-    const cs = getComputedStyle(introTexts);
+  function layoutColumns(block) {
+    const cs = getComputedStyle(block);
     const colW = parseFloat(cs.columnWidth);
     const gap = parseFloat(cs.columnGap) || 0;
     if (!colW) return;
-    introTexts.style.columnCount = "";
-    introTexts.style.width = `${colW}px`;
-    const left = introTexts.getBoundingClientRect().left;
+    block.style.columnCount = "";
+    block.style.width = `${colW}px`;
+    const left = block.getBoundingClientRect().left;
     let right = left + colW;
-    introTexts.querySelectorAll("p, h2, dl").forEach((el) => {
-      for (const r of el.getClientRects()) right = Math.max(right, r.right);
-    });
+    // a szövegsorok helye minden hasábban (Safariban is megbízható)
+    const range = document.createRange();
+    range.selectNodeContents(block);
+    for (const r of range.getClientRects()) right = Math.max(right, r.right);
     const n = Math.max(1, Math.round((right - left + gap) / (colW + gap)));
-    introTexts.style.columnCount = String(n);
-    introTexts.style.width = `${n * colW + (n - 1) * gap}px`;
+    block.style.columnCount = String(n);
+    block.style.width = `${n * colW + (n - 1) * gap}px`;
+  }
+
+  function layoutIntro() {
+    if (introView.hidden) return;
+    introBlocks.forEach(layoutColumns);
   }
 
   // a webfont betöltése után újratördelünk (más a betűszélesség)
@@ -917,24 +923,112 @@
 
   /* ---------------- Videó a nyitóoldalon ---------------- */
 
-  // A borítón a site saját lejátszógombja; elindítás után a böngésző vezérlői jönnek.
+  // A borítón a site saját lejátszógombja, lejátszás közben saját vezérlősáv
+  // (a böngészőé belelógna a levágott sarkokba).
   const introVideo = introView.querySelector("video");
   const introFigure = introView.querySelector(".intro-video");
+  const videoFrame = introView.querySelector(".video-frame");
+  const vbPlay = videoFrame.querySelector(".vb-play");
+  const vbTrack = videoFrame.querySelector(".vb-track");
+  const vbFill = videoFrame.querySelector(".vb-fill");
+  const vbBuffer = videoFrame.querySelector(".vb-buffer");
+  const vbTime = videoFrame.querySelector(".vb-time");
+  const vbMute = videoFrame.querySelector(".vb-mute");
+  const vbFull = videoFrame.querySelector(".vb-full");
 
-  function videoStarted() {
-    introFigure.classList.add("is-started");
-    introVideo.controls = true;
+  const clock = (t) => {
+    const s = Math.max(0, Math.floor(t || 0));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  };
+
+  function toggleVideo() {
+    if (introVideo.paused || introVideo.ended) introVideo.play();
+    else introVideo.pause();
   }
 
+  function updateVideoBar() {
+    const d = introVideo.duration || 0;
+    const t = introVideo.currentTime;
+    vbFill.style.width = d ? `${(100 * t) / d}%` : "0";
+    if (d && introVideo.buffered.length) {
+      vbBuffer.style.width = `${(100 * introVideo.buffered.end(introVideo.buffered.length - 1)) / d}%`;
+    }
+    vbTime.textContent = `${clock(t)} / ${clock(d || 426)}`;
+    vbTrack.setAttribute("aria-valuenow", String(Math.round(t)));
+    vbTrack.setAttribute("aria-valuetext", vbTime.textContent);
+  }
+  ["timeupdate", "durationchange", "progress", "seeked"].forEach((ev) =>
+    introVideo.addEventListener(ev, updateVideoBar)
+  );
+
+  // lejátszás közben a sáv 2,5 mp mozdulatlanság után elbújik
+  let barTimer = 0;
+  function wakeVideoBar() {
+    videoFrame.classList.add("bar-awake");
+    clearTimeout(barTimer);
+    if (!introVideo.paused) barTimer = setTimeout(() => videoFrame.classList.remove("bar-awake"), 2500);
+  }
+  videoFrame.addEventListener("pointermove", wakeVideoBar);
+  videoFrame.addEventListener("focusin", wakeVideoBar);
+
   introView.querySelector(".video-play").addEventListener("click", () => {
-    videoStarted();
+    introFigure.classList.add("is-started");
     introVideo.play();
+    vbPlay.focus({ preventScroll: true });
   });
+  introVideo.addEventListener("click", toggleVideo);
+  vbPlay.addEventListener("click", toggleVideo);
 
   // ha elindul a videó, a zene megáll, hogy ne szóljon a kettő egyszerre
   introVideo.addEventListener("play", () => {
-    videoStarted();
+    introFigure.classList.add("is-started");
+    videoFrame.classList.add("is-playing");
+    vbPlay.setAttribute("aria-label", "Szünet");
     stopMusic();
+    wakeVideoBar();
+  });
+  introVideo.addEventListener("pause", () => {
+    videoFrame.classList.remove("is-playing");
+    vbPlay.setAttribute("aria-label", "Lejátszás");
+    wakeVideoBar();
+  });
+
+  // tekerés: kattintás vagy húzás a csíkon, illetve nyilak
+  function seekTo(clientX) {
+    const r = vbTrack.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    if (introVideo.duration) introVideo.currentTime = p * introVideo.duration;
+    updateVideoBar();
+  }
+  vbTrack.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    vbTrack.setPointerCapture(e.pointerId);
+    seekTo(e.clientX);
+    const move = (ev) => seekTo(ev.clientX);
+    const up = () => vbTrack.removeEventListener("pointermove", move);
+    vbTrack.addEventListener("pointermove", move);
+    vbTrack.addEventListener("pointerup", up, { once: true });
+    vbTrack.addEventListener("pointercancel", up, { once: true });
+  });
+  vbTrack.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const step = e.key === "ArrowRight" ? 5 : -5;
+    introVideo.currentTime = Math.max(0, Math.min(introVideo.duration || 0, introVideo.currentTime + step));
+  });
+
+  vbMute.addEventListener("click", () => {
+    introVideo.muted = !introVideo.muted;
+  });
+  introVideo.addEventListener("volumechange", () => {
+    videoFrame.classList.toggle("is-muted", introVideo.muted);
+    vbMute.setAttribute("aria-label", introVideo.muted ? "Hang be" : "Némítás");
+  });
+
+  vbFull.addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (videoFrame.requestFullscreen) videoFrame.requestFullscreen();
+    else if (introVideo.webkitEnterFullscreen) introVideo.webkitEnterFullscreen(); // iPhone
   });
 
   function pauseVideo() {

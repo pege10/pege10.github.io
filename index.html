@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FRONTOPEDIA - A fal</title>
+    <title>A Fal</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -75,7 +75,6 @@
       <div class="intro-track">
         <section class="intro-hero">
           <header>
-            <p class="intro-kicker">FRONTOPEDIA</p>
             <h1>A Fal</h1>
             <p class="intro-sub">Egy digitális emlékezethely létrejötte</p>
           </header>
@@ -88,6 +87,25 @@
               <button class="video-play" type="button" aria-label="A videó lejátszása">
                 <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 2.2v7.6L10 6z" fill="currentColor" /></svg>
               </button>
+              <!-- saját vezérlősáv: a levágott sarkoktól beljebb (a böngészőé belelógna) -->
+              <div class="video-bar">
+                <button class="vb-btn vb-play" type="button" aria-label="Lejátszás">
+                  <svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 2.2v7.6L10 6z" fill="currentColor" /></svg>
+                  <svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.8 2.2h2.3v7.6H2.8zM6.9 2.2h2.3v7.6H6.9z" fill="currentColor" /></svg>
+                </button>
+                <div class="vb-track" role="slider" tabindex="0" aria-label="Hol tart a videó" aria-valuemin="0" aria-valuemax="426" aria-valuenow="0">
+                  <span class="vb-buffer"></span>
+                  <span class="vb-fill"></span>
+                </div>
+                <span class="vb-time">0:00 / 7:06</span>
+                <button class="vb-btn vb-mute" type="button" aria-label="Némítás">
+                  <svg class="i-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9h4l5-4v14l-5-4h-4z" fill="currentColor" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                  <svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9h4l5-4v14l-5-4h-4z" fill="currentColor" /><path d="M16 9l5.5 6M21.5 9L16 15" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </button>
+                <button class="vb-btn vb-full" type="button" aria-label="Teljes képernyő">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.2" /></svg>
+                </button>
+              </div>
             </div>
             <figcaption>
               <span>MOME Fal event | 7:06</span>
